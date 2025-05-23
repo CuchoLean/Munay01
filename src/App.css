@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+.bg-cover {
+background-image:
+    linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url('../img/data.jpg');  background-size: cover;
+  background-position: center;
+  min-height: calc(100vh - 112px); /* altura total menos navbar y footer */
+}
