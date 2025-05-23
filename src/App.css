@@ -44,3 +44,15 @@ background-image:
   background-position: center;
   min-height: calc(100vh - 112px); /* altura total menos navbar y footer */
 }
+
+.modal.fade.show.d-block {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.modal.fade.d-block {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
