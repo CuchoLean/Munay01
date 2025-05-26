@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import UsuarioService from "../services/UsuarioService";
+//import UsuarioService from "../services/UsuarioService";
+import { useNavigate } from "react-router-dom"; // 👈 Importamos el hook
+import { useAuth } from "../services/AuthContext"; // 👈 Importa el contexto
+
 
 const LoginForm = ({ onClose, onSuccess }) => {
   const [email, setEmail] = useState("");
@@ -7,6 +10,9 @@ const LoginForm = ({ onClose, onSuccess }) => {
   const [error, setError] = useState("");
   const [errores, setErrores] = useState({});
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // 👈 Instanciamos el hook
+    const { login } = useAuth(); // 👈 Usa el login del contexto
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,9 +35,11 @@ const LoginForm = ({ onClose, onSuccess }) => {
     }
 
     try {
-      await UsuarioService.login({ email, password });
+      await login({ email, password }); // 👈 Usamos login del contexto
       onSuccess("Usuario logueado correctamente");
       onClose();
+      navigate("/people");
+      window.location.reload() // 👈 Redirección al login exitoso
     } catch (err) {
       setError("Credenciales incorrectas");
       setEmail("");
@@ -76,9 +84,18 @@ const LoginForm = ({ onClose, onSuccess }) => {
 
       {error && <div className="text-danger mb-3">{error}</div>}
 
-      <button type="submit" className="btn btn-primary" disabled={loading}>
-        {loading ? "Cargando..." : "Iniciar sesión"}
-      </button>
+      <div className="d-flex justify-content-end mt-3">
+        <button
+          type="button"
+          className="btn btn-secondary me-2"
+          onClick={onClose}
+        >
+          Cerrar
+        </button>
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? "Cargando..." : "Iniciar sesión"}
+        </button>
+      </div>
     </form>
   );
 };

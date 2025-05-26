@@ -1,28 +1,23 @@
 import "./App.css";
-import Navbar from "./components/Navbar"; // 👈 importa el componente
-import Footer from "./components/Footer"; // 👈 importa el componente
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Navbar from "./components/Navbar"
+import Footer from "./components/Footer"; 
 import MainInicio from "./components/MainInicio";
-
-import React, { useState } from "react";
-
+import People from "./components/People";
 
 function App() {
-  const [showModal, setShowModal] = useState(false);
-
-  const handleOpenModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
-
   return (
-  
 
-       <div className="app d-flex flex-column min-vh-100">
-      <Navbar />
-      <MainInicio />
-      <Footer />
-    </div>
-    
+    <BrowserRouter>
+      <div className="app d-flex flex-column min-vh-100 bg-light">
+        <Navbar />
+        <Routes>
+          <Route exact path="/" element={<MainInicio />}></Route>
+          <Route path="/people" element={<People />} />
+        </Routes>
+        <Footer />
+      </div>
+    </BrowserRouter>
   );
 }
-
-
 export default App;
