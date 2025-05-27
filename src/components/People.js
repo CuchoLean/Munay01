@@ -80,16 +80,17 @@ const People = () => {
   if (!usuario) {
     return (
       <div className="flex-fill container d-flex justify-content-center">
-        <h1 className="text-center mt-3">Cargando usuarios...</h1>
+        <h2 className="text-center mt-3">Cargando usuarios...</h2>
       </div>
     );
   }
 
   return (
-    <div className="flex-fill container my-5">
+    <div className="flex-fill container my-5 justify-content-center">
+      <h1 className="text-center">USUARIOS</h1>
       <div
         key={usuario.id}
-        className="position-relative d-flex flex-column flex-md-row border rounded mb-4"
+        className="position-relative d-flex flex-column flex-md-row border rounded mb-4 mt-3"
         style={{ overflow: "hidden", minHeight: "400px" }}
       >
         {/* Overlay de carga */}

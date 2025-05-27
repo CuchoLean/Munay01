@@ -1,6 +1,6 @@
 import React from "react";
 import { useAuth } from "../services/AuthContext"; // Asegúrate de importar tu contexto
-import { useNavigate } from "react-router-dom"; // Solo si estás usando react-router
+import { useNavigate, Link } from "react-router-dom"; // Solo si estás usando react-router
 
 const Navbar = () => {
   const { isLoggedIn, logout } = useAuth();
@@ -38,11 +38,18 @@ const Navbar = () => {
               <a className="nav-link">Inicio</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="ww.gogle.com">Más información</a>
+              <a className="nav-link" href="ww.gogle.com">
+                Más información
+              </a>
             </li>
 
             {isLoggedIn && (
               <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/people">
+                    Conocer
+                  </Link>
+                </li>
                 <li className="nav-item dropdown">
                   <a
                     className="nav-link dropdown-toggle"
@@ -64,18 +71,19 @@ const Navbar = () => {
                     <a className="dropdown-item">Something else here</a>
                   </div>
                 </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/matches">
+                    Matches
+                  </Link>
+                </li>
               </>
             )}
           </ul>
 
           {isLoggedIn && (
             <>
-              <div
-                className="d-flex flex-column flex-lg-row ms-auto gap-2"
-              >
-                <button
-                  className="btn btn-outline-light  "
-                >
+              <div className="d-flex flex-column flex-lg-row ms-auto gap-2">
+                <button className="btn btn-outline-light  ">
                   Editar perfil
                 </button>
                 <button

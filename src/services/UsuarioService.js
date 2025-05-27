@@ -23,13 +23,13 @@ class UsuarioService {
       const refreshToken = response.data.refresh_token;
 
       if (accessToken) {
-       localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
 
         const decoded = jwtDecode(accessToken);
 
         const userId = decoded.id;
-        console.log(userId)
+        console.log(userId);
 
         // Guardar el ID en localStorage para usar en React
         localStorage.setItem("idUsuario", userId);
@@ -62,13 +62,25 @@ class UsuarioService {
   }
 
   getUsuariosNoLikeados() {
-  const token = localStorage.getItem("accessToken");
-  return axios.get("http://localhost:8080/usuarios/todosL", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-}
+    const token = localStorage.getItem("accessToken");
+    return axios.get("http://localhost:8080/usuarios/todosL", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  getUsuariosConMatch(userId) {
+    const token = localStorage.getItem("accessToken");
+    return axios.get(
+      `http://localhost:8080/usuarios/${userId}/usuarios-match`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  }
 }
 
 export default new UsuarioService();
