@@ -4,48 +4,75 @@ import { Modal, Button, Form } from "react-bootstrap";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 
-const ChatModal = ({ show, onHide, currentUser, receiverUser }) => {
-  const [messages, setMessages] = useState([]);
+const ChatModal = ({
+  show,
+  onHide,
+  currentUser,
+  receiverUser,
+  chatHistory,
+  onUpdateMessages,
+}) => {
   const [input, setInput] = useState("");
-  const stompClient = useRef(null);
-  const token = localStorage.getItem("accessToken"); // Asegúrate que este sea tu JWT
+  const [localMessages, setLocalMessages] = useState([]);
 
+  const stompClient = useRef(null);
 
   useEffect(() => {
-    if (show) {
-const socket = new SockJS(`http://localhost:8080/us?token=Bearer ${token}`);
-    stompClient.current = new Client({
-  webSocketFactory: () => socket,
-  onConnect: () => {
-    stompClient.current.subscribe('/user/queue/private', (message) => {
-  setMessages((prev) => [...prev, JSON.parse(message.body)]);
-});
-  },
-  debug: (str) => console.log(str),
-});
+    if (!show || !receiverUser) return;
 
-      stompClient.current.activate();
-    }
+    setLocalMessages(chatHistory || []);
+
+    const socket = new SockJS(`http://localhost:8080/ws`);
+    stompClient.current = new Client({
+      webSocketFactory: () => socket,
+      onConnect: () => {
+        console.log("Connected to server", stompClient.current);
+
+        stompClient.current.subscribe(
+          `/user/${currentUser}/private`,
+          (message) => {
+            const parsedMessage = JSON.parse(message.body);
+
+            // ✅ Asegúrate que solo se agreguen mensajes de esta conversación
+            if (
+              parsedMessage.senderName === receiverUser ||
+              parsedMessage.receiverName === receiverUser
+            ) {
+              setLocalMessages((prev) => {
+                const updated = [...prev, parsedMessage];
+                onUpdateMessages(receiverUser, updated); // 🔄 actualiza el padre también
+                return updated;
+              });
+            }
+          }
+        );
+      },
+      debug: (str) => console.log(str),
+    });
+
+    stompClient.current.activate();
 
     return () => {
       if (stompClient.current) {
         stompClient.current.deactivate();
       }
     };
-  }, [show]);
+  }, [show, receiverUser]); // 👈 incluye receiverUser como dependencia
 
   const sendMessage = () => {
     if (stompClient.current && stompClient.current.connected) {
       const message = {
         senderName: currentUser,
         receiverName: receiverUser,
-        content: input,
+        message: input,
       };
       stompClient.current.publish({
         destination: "/app/private-message",
         body: JSON.stringify(message),
       });
-      setMessages((prev) => [...prev, message]);
+      const updated = [...localMessages, message];
+      setLocalMessages(updated);
+      onUpdateMessages(receiverUser, updated);
       setInput("");
     }
   };
@@ -55,15 +82,17 @@ const socket = new SockJS(`http://localhost:8080/us?token=Bearer ${token}`);
       <Modal.Header closeButton>
         <Modal.Title>Chat con {receiverUser}</Modal.Title>
       </Modal.Header>
-      <Modal.Body style={{ maxHeight: "400px", overflowY: "auto" }}>
-        {messages.map((msg, i) => (
+      <Modal.Body
+        style={{ maxHeight: "400px", minHeight: "150px", overflowY: "auto" }}
+      >
+        {chatHistory.map((msg, i) => (
           <div
             key={i}
             style={{
               textAlign: msg.senderName === currentUser ? "right" : "left",
             }}
           >
-            <strong>{msg.senderName}</strong>: {msg.content}
+            <strong>{msg.senderName}</strong>: {msg.message}
           </div>
         ))}
       </Modal.Body>

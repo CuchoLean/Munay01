@@ -3,15 +3,14 @@ import UsuarioService from "../services/UsuarioService";
 import { Carousel, Spinner } from "react-bootstrap";
 import ChatModal from "./ChatModal";
 
-
 const PeopleMatches = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-const [showModal, setShowModal] = useState(false);
-const [receiver, setReceiver] = useState(null);
-const currentUser = localStorage.getItem("idUsuario"); // o email/nombre según tu modelo
-
+  const [showModal, setShowModal] = useState(false);
+  const [receiver, setReceiver] = useState(null);
+  const currentUser = localStorage.getItem("idUsuario"); // o email/nombre según tu modelo
+  const [chatHistories, setChatHistories] = useState({});
 
   useEffect(() => {
     setIsLoading(true);
@@ -120,30 +119,39 @@ const currentUser = localStorage.getItem("idUsuario"); // o email/nombre según 
                 </p>
               </div>
               <div className="d-flex justify-content-center mt-3">
-<button
-  className="btn btn-primary btn-lg w-100"
-  onClick={() => {
-    setReceiver(usuario.name); // o el identificador correcto
-    setShowModal(true);
-  }}
->
-  Chat
-</button>              </div>
+                <button
+                  className="btn btn-primary btn-lg w-100"
+                  onClick={() => {
+                    setReceiver(usuario.id); // o el identificador correcto
+                    setShowModal(true);
+                  }}
+                >
+                  Chat
+                </button>{" "}
+              </div>
             </div>
           </div>
         ))
       )}
       {receiver && (
-  <ChatModal
-    show={showModal}
-    onHide={() => setShowModal(false)}
-    currentUser={currentUser}
-    receiverUser={receiver}
-  />
-)}
-
+        <ChatModal
+          show={showModal}
+          onHide={() => {
+            setShowModal(false);
+            setReceiver(null);
+          }}
+          currentUser={currentUser}
+          receiverUser={receiver}
+          chatHistory={chatHistories[receiver] || []}
+          onUpdateMessages={(receiverId, newMessages) => {
+            setChatHistories((prev) => ({
+              ...prev,
+              [receiverId]: newMessages,
+            }));
+          }}
+        />
+      )}
     </div>
-    
   );
 };
 
