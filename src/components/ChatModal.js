@@ -3,44 +3,62 @@ import React, { useEffect, useState, useRef } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
+import axios from "axios";
 
 const ChatModal = ({
   show,
   onHide,
   currentUser,
   receiverUser,
-  chatHistory,
   onUpdateMessages,
 }) => {
   const [input, setInput] = useState("");
   const [localMessages, setLocalMessages] = useState([]);
+  const token = localStorage.getItem("accessToken");
 
   const stompClient = useRef(null);
+  const bottomRef = useRef(null); // 👈 ref para scroll automático
 
   useEffect(() => {
     if (!show || !receiverUser) return;
 
-    setLocalMessages(chatHistory || []);
+    // Cargar historial de mensajes desde backend
+    const fetchHistory = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/mensajes/historial",
+          {
+            params: { user1: currentUser, user2: receiverUser },
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setLocalMessages(response.data);
+        onUpdateMessages(receiverUser, response.data);
+      } catch (error) {
+        console.error("Error cargando historial:", error);
+        setLocalMessages([]); // opcional para limpiar si falla
+        onUpdateMessages(receiverUser, []);
+      }
+    };
+
+    fetchHistory();
 
     const socket = new SockJS(`http://localhost:8080/ws`);
     stompClient.current = new Client({
       webSocketFactory: () => socket,
       onConnect: () => {
-        console.log("Connected to server", stompClient.current);
-
         stompClient.current.subscribe(
           `/user/${currentUser}/private`,
           (message) => {
             const parsedMessage = JSON.parse(message.body);
 
-            // ✅ Asegúrate que solo se agreguen mensajes de esta conversación
             if (
               parsedMessage.senderName === receiverUser ||
               parsedMessage.receiverName === receiverUser
             ) {
               setLocalMessages((prev) => {
                 const updated = [...prev, parsedMessage];
-                onUpdateMessages(receiverUser, updated); // 🔄 actualiza el padre también
+                onUpdateMessages(receiverUser, updated);
                 return updated;
               });
             }
@@ -57,23 +75,48 @@ const ChatModal = ({
         stompClient.current.deactivate();
       }
     };
-  }, [show, receiverUser]); // 👈 incluye receiverUser como dependencia
+  }, [show, receiverUser]);
 
-  const sendMessage = () => {
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [localMessages]);
+
+  const sendMessage = async () => {
     if (stompClient.current && stompClient.current.connected) {
       const message = {
         senderName: currentUser,
         receiverName: receiverUser,
         message: input,
       };
-      stompClient.current.publish({
-        destination: "/app/private-message",
-        body: JSON.stringify(message),
-      });
-      const updated = [...localMessages, message];
-      setLocalMessages(updated);
-      onUpdateMessages(receiverUser, updated);
-      setInput("");
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/mensajes/crear",
+          message,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const savedMessage = response.data; // mensaje con id, fecha, etc.
+
+        // Enviar por websocket para notificar al receptor
+        stompClient.current.publish({
+          destination: "/app/private-message",
+          body: JSON.stringify(savedMessage),
+        });
+
+        // Actualizar estado local y padre con el mensaje guardado
+        const updated = [...localMessages, savedMessage];
+        setLocalMessages(updated);
+        onUpdateMessages(receiverUser, updated);
+        setInput("");
+      } catch (error) {
+        console.error("Error guardando mensaje:", error);
+      }
     }
   };
 
@@ -85,7 +128,7 @@ const ChatModal = ({
       <Modal.Body
         style={{ maxHeight: "400px", minHeight: "150px", overflowY: "auto" }}
       >
-        {chatHistory.map((msg, i) => (
+        {localMessages.map((msg, i) => (
           <div
             key={i}
             style={{
@@ -95,6 +138,8 @@ const ChatModal = ({
             <strong>{msg.senderName}</strong>: {msg.message}
           </div>
         ))}
+                <div ref={bottomRef} /> {/* 👈 Marcador de scroll */}
+
       </Modal.Body>
       <Modal.Footer>
         <Form.Control

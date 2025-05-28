@@ -142,7 +142,6 @@ const PeopleMatches = () => {
           }}
           currentUser={currentUser}
           receiverUser={receiver}
-          chatHistory={chatHistories[receiver] || []}
           onUpdateMessages={(receiverId, newMessages) => {
             setChatHistories((prev) => ({
               ...prev,
