@@ -33,6 +33,7 @@ class UsuarioService {
 
         // Guardar el ID en localStorage para usar en React
         localStorage.setItem("idUsuario", userId);
+        
       }
       return response;
     });

@@ -10,12 +10,13 @@ const ChatModal = ({
   onHide,
   currentUser,
   receiverUser,
+  receiverName,
   onUpdateMessages,
 }) => {
   const [input, setInput] = useState("");
   const [localMessages, setLocalMessages] = useState([]);
   const token = localStorage.getItem("accessToken");
-
+  const currentName= "Tú";
   const stompClient = useRef(null);
   const bottomRef = useRef(null); // 👈 ref para scroll automático
 
@@ -123,7 +124,7 @@ const ChatModal = ({
   return (
     <Modal show={show} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
-        <Modal.Title>Chat con {receiverUser}</Modal.Title>
+        <Modal.Title>Chat con {receiverName}</Modal.Title>
       </Modal.Header>
       <Modal.Body
         style={{ maxHeight: "400px", minHeight: "150px", overflowY: "auto" }}
@@ -135,11 +136,13 @@ const ChatModal = ({
               textAlign: msg.senderName === currentUser ? "right" : "left",
             }}
           >
-            <strong>{msg.senderName}</strong>: {msg.message}
+            <strong>
+              {msg.senderName === currentUser ? currentName : receiverName}
+            </strong>
+            : {msg.message}{" "}
           </div>
         ))}
-                <div ref={bottomRef} /> {/* 👈 Marcador de scroll */}
-
+        <div ref={bottomRef} /> {/* 👈 Marcador de scroll */}
       </Modal.Body>
       <Modal.Footer>
         <Form.Control

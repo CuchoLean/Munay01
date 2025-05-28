@@ -12,6 +12,8 @@ const PeopleMatches = () => {
   const currentUser = localStorage.getItem("idUsuario"); // o email/nombre según tu modelo
   const [chatHistories, setChatHistories] = useState({});
 
+  const [receiverName, setReceiverName] = useState({});
+
   useEffect(() => {
     setIsLoading(true);
     const userId = localStorage.getItem("idUsuario");
@@ -122,7 +124,8 @@ const PeopleMatches = () => {
                 <button
                   className="btn btn-primary btn-lg w-100"
                   onClick={() => {
-                    setReceiver(usuario.id); // o el identificador correcto
+                    setReceiver(usuario.id);
+                    setReceiverName(usuario.name); // o el identificador correcto
                     setShowModal(true);
                   }}
                 >
@@ -142,6 +145,7 @@ const PeopleMatches = () => {
           }}
           currentUser={currentUser}
           receiverUser={receiver}
+          receiverName={receiverName}
           onUpdateMessages={(receiverId, newMessages) => {
             setChatHistories((prev) => ({
               ...prev,
