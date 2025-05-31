@@ -20,7 +20,7 @@ const Navbar = () => {
       <div className="container-fluid px-3">
         {" "}
         {/* px-3 = padding horizontal 1rem aprox */}
-        <a className="navbar-brand">Navbar</a>
+        <a className="navbar-brand">MUNAY</a>
         <button
           className="navbar-toggler"
           type="button"
@@ -83,9 +83,12 @@ const Navbar = () => {
           {isLoggedIn && (
             <>
               <div className="d-flex flex-column flex-lg-row ms-auto gap-2">
-                <button className="btn btn-outline-light  ">
+                <Link to="/perfil" className="btn btn-outline-light">
+                  Mostrar perfil
+                </Link>
+                  <Link to="/perfil" className="btn btn-outline-light">
                   Editar perfil
-                </button>
+                </Link>
                 <button
                   className="btn btn-outline-light "
                   onClick={handleLogout}

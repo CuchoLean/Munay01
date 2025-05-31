@@ -33,7 +33,6 @@ class UsuarioService {
 
         // Guardar el ID en localStorage para usar en React
         localStorage.setItem("idUsuario", userId);
-        
       }
       return response;
     });
@@ -82,6 +81,40 @@ class UsuarioService {
       }
     );
   }
+
+  updateUsuario(datosActualizados) {
+    const token = localStorage.getItem("accessToken");
+    return axios.put(
+      "http://localhost:8080/usuarios/actualizar",
+      datosActualizados,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  }
+
+  getUsuarioDesdeToken() {
+    const token = localStorage.getItem("accessToken");
+    return axios.get("http://localhost:8080/usuarios/buscarUsuarioToken", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  deleteUsuario() {
+  const token = localStorage.getItem("accessToken");
+  return axios.delete("http://localhost:8080/usuarios/eliminar", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+
+
 }
 
 export default new UsuarioService();

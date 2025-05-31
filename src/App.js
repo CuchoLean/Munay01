@@ -5,7 +5,7 @@ import Footer from "./components/Footer";
 import MainInicio from "./components/MainInicio";
 import People from "./components/People";
 import PeopleMatches from "./components/PeopleMatches";
-
+import PerfilUsuario from "./components/PerfilUsuario";
 
 function App() {
   return (
@@ -16,6 +16,7 @@ function App() {
           <Route exact path="/" element={<MainInicio />}></Route>
           <Route path="/people" element={<People />} />
           <Route path="/matches" element={<PeopleMatches />} />
+          <Route path="/perfil" element={<PerfilUsuario />} />
         </Routes>
         <Footer />
       </div>

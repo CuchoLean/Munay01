@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import UsuarioService from "../services/UsuarioService";
 import { Carousel, Spinner, Modal } from "react-bootstrap";
+import Swal from "sweetalert2";
 
 const People = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetchingUsuarios, setIsFetchingUsuarios] = useState(true);
+
   const loggedUserId = localStorage.getItem("idUsuario"); // Debes guardar el userId al hacer login
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const [usuarioParaEliminar, setUsuarioParaEliminar] = useState(null);
 
   useEffect(() => {
     UsuarioService.getUsuariosNoLikeados()
@@ -19,6 +19,9 @@ const People = () => {
       })
       .catch((error) => {
         console.log(error);
+      })
+      .finally(() => {
+        setIsFetchingUsuarios(false); // Ya terminó la carga inicial
       });
   }, []);
 
@@ -38,11 +41,37 @@ const People = () => {
 
     UsuarioService.likeUser(loggedUserId, likedUserId)
       .then((res) => {
-        const mensaje = res.data; // "Like enviado" o "¡Match!"
-        setModalMessage(mensaje);
-        setShowModal(true);
-        setUsuarioParaEliminar(currentIndex); // 👉 Guardamos el índice del usuario que se va a eliminar
+        const mensaje = res.data;
+
+        if (mensaje.includes("Match")) {
+          // Mostrar una imagen personalizada
+          Swal.fire({
+            title: "¡Felicidades!",
+            text: mensaje,
+            imageUrl: "/img/corazon.gif", // Cambia esta URL si quieres otra imagen
+
+            imageWidth: 300,
+            imageHeight: 200,
+            imageAlt: "Imagen de Match",
+            confirmButtonText: "Cerrar",
+          });
+        } else {
+          // Mostrar alerta tipo success
+          Swal.fire({
+            title: "Like enviado",
+            text: mensaje,
+            icon: "success",
+            confirmButtonText: "Cerrar",
+          });
+        }
+
+        // Actualizar usuarios (después de cualquier alerta)
+        const nuevosUsuarios = [...usuarios];
+        nuevosUsuarios.splice(currentIndex, 1);
+        setUsuarios(nuevosUsuarios);
+        setCurrentIndex((prev) => (prev >= nuevosUsuarios.length ? 0 : prev));
       })
+
       .catch((err) => {
         console.error(err);
         alert("Error enviando like");
@@ -62,25 +91,27 @@ const People = () => {
     }, 100);
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-
-    if (usuarioParaEliminar !== null) {
-      const nuevosUsuarios = [...usuarios];
-      nuevosUsuarios.splice(usuarioParaEliminar, 1);
-      setUsuarios(nuevosUsuarios);
-      setCurrentIndex((prev) => (prev >= nuevosUsuarios.length ? 0 : prev));
-      setUsuarioParaEliminar(null);
-    }
-  };
-
   const usuario = usuarios[currentIndex];
 
   // Validación para evitar errores
-  if (!usuario) {
+  if (isFetchingUsuarios) {
     return (
-      <div className="flex-fill container d-flex justify-content-center">
-        <h2 className="text-center mt-3">Cargando usuarios...</h2>
+      <div
+        className="flex-fill container d-flex justify-content-center align-items-center"
+        style={{ height: "60vh" }}
+      >
+        <h2 className="text-center">Cargando usuarios...</h2>
+      </div>
+    );
+  }
+
+  if (usuarios.length === 0) {
+    return (
+      <div
+        className="flex-fill container d-flex justify-content-center align-items-center"
+        style={{ height: "60vh" }}
+      >
+        <h2 className="text-center">No hay más usuarios disponibles</h2>
       </div>
     );
   }
@@ -155,23 +186,35 @@ const People = () => {
 
         {/* Mitad derecha: Información */}
         <div
-          className="p-4 bg-white flex-grow-1 d-flex flex-column justify-content-between"
+          className="p-4 bg-white flex-grow-1 d-flex flex-column "
           style={{
             flexBasis: "55%",
-            width: "100%",
           }}
         >
-          <div>
+          {/* Nombre siempre arriba */}
+          <div className="mb-3">
             <h3>{usuario.name}</h3>
+          </div>
+
+          {/* Biografía y Edad: crecen según espacio disponible */}
+          <div className="flex-grow-1 d-flex flex-column justify-content-center">
             <p>
               <strong>Biografía:</strong> {usuario.bio}
             </p>
             <p>
               <strong>Edad:</strong> {usuario.age}
             </p>
+            <p>
+              <strong>Genero:</strong> {usuario.genero}
+            </p>
+            <p>
+              <strong>Fuma:</strong>{" "}
+              {usuario.fumador ? "Sí, fuma" : "No fumador"}
+            </p>
           </div>
 
-          <div className="d-flex justify-content-center mt-3 gap-3">
+          {/* Botones siempre abajo */}
+          <div className="d-flex justify-content-center gap-3 mt-auto">
             <button
               className="btn btn-lg btn-success"
               onClick={handleLike}
@@ -189,17 +232,6 @@ const People = () => {
           </div>
         </div>
       </div>
-      <Modal show={showModal} onHide={handleCloseModal} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>FELICIDADES</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{modalMessage}</Modal.Body>
-        <Modal.Footer>
-          <button className="btn btn-primary" onClick={handleCloseModal}>
-            Cerrar
-          </button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 };

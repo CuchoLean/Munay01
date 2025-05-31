@@ -35,7 +35,7 @@ const PeopleMatches = () => {
   if (isLoading) {
     return (
       <div
-        className="d-flex justify-content-center align-items-center"
+        className="flex-fill d-flex justify-content-center align-items-center"
         style={{ height: "80vh" }}
       >
         <Spinner animation="border" variant="primary" />
@@ -111,8 +111,12 @@ const PeopleMatches = () => {
               className="p-4 bg-white flex-grow-1 d-flex flex-column justify-content-between"
               style={{ flexBasis: "55%" }}
             >
-              <div>
+              <div className="mb-3">
                 <h3>{usuario.name}</h3>
+              </div>
+
+              {/* Biografía y Edad: crecen según espacio disponible */}
+              <div className="flex-grow-1 d-flex flex-column justify-content-center">
                 <p>
                   <strong>Biografía:</strong> {usuario.bio}
                 </p>
@@ -120,6 +124,7 @@ const PeopleMatches = () => {
                   <strong>Edad:</strong> {usuario.age}
                 </p>
               </div>
+
               <div className="d-flex justify-content-center mt-3">
                 <button
                   className="btn btn-primary btn-lg w-100"

@@ -20,6 +20,8 @@ export const RegistroForm = ({ onClose, onSuccess }) => {
   const [bio, setBio] = useState("");
   const [foto1, setFoto1] = useState(null);
   const [foto2, setFoto2] = useState(null);
+  const [genero, setGenero] = useState("");
+  const [fumador, setFumador] = useState(false);
 
   const [errores, setErrores] = useState({});
 
@@ -45,6 +47,8 @@ export const RegistroForm = ({ onClose, onSuccess }) => {
         bio,
         foto1: base64Foto1,
         foto2: base64Foto2,
+        genero,
+        fumador,
       };
 
       // Enviar al backend
@@ -144,6 +148,19 @@ export const RegistroForm = ({ onClose, onSuccess }) => {
               <div className="invalid-feedback">{errores.foto1}</div>
             )}
           </div>
+
+          <div className="form-group mb-3 form-check">
+            <input
+              type="checkbox"
+              className="form-check-input"
+              id="fumador"
+              checked={fumador}
+              onChange={(e) => setFumador(e.target.checked)}
+            />
+            <label className="form-check-label" htmlFor="fumador">
+              ¿Fumas?
+            </label>
+          </div>
         </div>
 
         {/* Columna derecha */}
@@ -203,6 +220,22 @@ export const RegistroForm = ({ onClose, onSuccess }) => {
             />
             {errores.foto2 && (
               <div className="invalid-feedback">{errores.foto2}</div>
+            )}
+          </div>
+
+          <div className="form-group mb-3">
+            <label className="form-label">Género</label>
+            <select
+              className={"form-select"}
+              value={genero}
+              onChange={(e) => setGenero(e.target.value)}
+            >
+              <option value="OTRO">No quiero decirlo</option>
+              <option value="HOMBRE">Hombre</option>
+              <option value="MUJER">Mujer</option>
+            </select>
+            {errores.gender && (
+              <div className="invalid-feedback">{errores.gender}</div>
             )}
           </div>
         </div>

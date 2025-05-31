@@ -76,7 +76,7 @@ function MainInicio() {
             role="document"
             onClick={(e) => e.stopPropagation()} // Evita cierre al clicar dentro
           >
-            <div className="modal-content">
+            <div className="modal-content bg-light">
               <div className="modal-header">
                 <h5 className="modal-title">Creación de la cuenta</h5>
                 <button
@@ -114,7 +114,7 @@ function MainInicio() {
             role="document"
             onClick={(e) => e.stopPropagation()} // Evita cierre al clicar dentro
           >
-            <div className="modal-content">
+            <div className="modal-content bg-light">
               <div className="modal-header">
                 <h5 className="modal-title">Creación de la cuenta</h5>
                 <button
