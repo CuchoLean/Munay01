@@ -17,7 +17,7 @@ import PostsAdmin from "./components/PostsAdmin";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/Munay01">
       <div className="app d-flex flex-column min-vh-100 bg-light">
         <Navbar />
         <Routes>
