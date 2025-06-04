@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UsuarioService from "../services/UsuarioService";
-import { Carousel, Spinner, Modal } from "react-bootstrap";
+import { Carousel, Spinner } from "react-bootstrap";
 import Swal from "sweetalert2";
 
 const People = () => {
@@ -8,6 +8,10 @@ const People = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingUsuarios, setIsFetchingUsuarios] = useState(true);
+  const [generoFiltrado, setGeneroFiltrado] = useState("");
+  const usuariosFiltrados = generoFiltrado
+    ? usuarios.filter((u) => u.genero.toUpperCase() === generoFiltrado)
+    : usuarios;
 
   const loggedUserId = localStorage.getItem("idUsuario"); // Debes guardar el userId al hacer login
 
@@ -39,7 +43,7 @@ const People = () => {
       return;
     }
 
-    UsuarioService.likeUser(loggedUserId, likedUserId)
+    UsuarioService.likeUser(likedUserId)
       .then((res) => {
         const mensaje = res.data;
 
@@ -85,13 +89,13 @@ const People = () => {
     setIsLoading(true);
     setTimeout(() => {
       setCurrentIndex((prevIndex) =>
-        prevIndex + 1 < usuarios.length ? prevIndex + 1 : 0
+        prevIndex + 1 < usuariosFiltrados.length ? prevIndex + 1 : 0
       );
       setIsLoading(false);
     }, 100);
   };
 
-  const usuario = usuarios[currentIndex];
+  const usuario = usuariosFiltrados[currentIndex];
 
   // Validación para evitar errores
   if (isFetchingUsuarios) {
@@ -105,133 +109,151 @@ const People = () => {
     );
   }
 
-  if (usuarios.length === 0) {
-    return (
-      <div
-        className="flex-fill container d-flex justify-content-center align-items-center"
-        style={{ height: "60vh" }}
-      >
-        <h2 className="text-center">No hay más usuarios disponibles</h2>
-      </div>
-    );
-  }
-
   return (
     <div className="flex-fill container my-5 justify-content-center">
       <h1 className="text-center">USUARIOS</h1>
-      <div
-        key={usuario.id}
-        className="position-relative d-flex flex-column flex-md-row border rounded mb-4 mt-3"
-        style={{ overflow: "hidden", minHeight: "400px" }}
-      >
-        {/* Overlay de carga */}
-        {isLoading && (
-          <div
-            className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75"
-            style={{ zIndex: 10 }}
-          >
-            <Spinner animation="border" role="status" variant="primary" />
-          </div>
-        )}
-
-        {/* Mitad izquierda: Carrusel de fotos */}
-        <div
-          className="bg-secondary bg-gradient d-flex justify-content-center align-items-center"
-          style={{
-            height: "400px",
-            flexBasis: "45%",
-            maxWidth: "100%",
-          }}
+      <div className="mb-4 text-center">
+        <label htmlFor="genero" className="form-label me-2 fw-bold">
+          Mostrar usuarios del género:
+        </label>
+        <select
+          id="genero"
+          className="form-select d-inline-block w-auto"
+          value={generoFiltrado}
+          onChange={(e) => setGeneroFiltrado(e.target.value)}
         >
-          <Carousel indicators={true} controls={true} style={{ width: "100%" }}>
-            {usuario.foto1 && (
-              <Carousel.Item>
-                <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={{ height: "400px", width: "100%" }}
-                >
-                  <img
-                    src={`data:image/jpeg;base64,${usuario.foto1}`}
-                    alt="Foto 1"
-                    className="img-fluid"
-                    style={{
-                      maxHeight: "100%",
-                      maxWidth: "100%",
-                      objectFit: "contain",
-                    }}
-                  />
-                </div>
-              </Carousel.Item>
-            )}
-            {usuario.foto2 && (
-              <Carousel.Item>
-                <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={{ height: "400px", width: "100%" }}
-                >
-                  <img
-                    src={`data:image/jpeg;base64,${usuario.foto2}`}
-                    alt="Foto 2"
-                    className="img-fluid"
-                    style={{
-                      maxHeight: "100%",
-                      maxWidth: "100%",
-                    }}
-                  />
-                </div>
-              </Carousel.Item>
-            )}
-          </Carousel>
-        </div>
-
-        {/* Mitad derecha: Información */}
-        <div
-          className="p-4 bg-white flex-grow-1 d-flex flex-column "
-          style={{
-            flexBasis: "55%",
-          }}
-        >
-          {/* Nombre siempre arriba */}
-          <div className="mb-3">
-            <h3>{usuario.name}</h3>
-          </div>
-
-          {/* Biografía y Edad: crecen según espacio disponible */}
-          <div className="flex-grow-1 d-flex flex-column justify-content-center">
-            <p>
-              <strong>Biografía:</strong> {usuario.bio}
-            </p>
-            <p>
-              <strong>Edad:</strong> {usuario.age}
-            </p>
-            <p>
-              <strong>Genero:</strong> {usuario.genero}
-            </p>
-            <p>
-              <strong>Fuma:</strong>{" "}
-              {usuario.fumador ? "Sí, fuma" : "No fumador"}
-            </p>
-          </div>
-
-          {/* Botones siempre abajo */}
-          <div className="d-flex justify-content-center gap-3 mt-auto">
-            <button
-              className="btn btn-lg btn-success"
-              onClick={handleLike}
-              disabled={isLoading}
-            >
-              Me gusta
-            </button>
-            <button
-              className="btn btn-lg btn-danger"
-              onClick={handleNo}
-              disabled={isLoading}
-            >
-              NO!
-            </button>
-          </div>
-        </div>
+          <option value="">Todos</option>
+          <option value="HOMBRE">Hombres</option>
+          <option value="MUJER">Mujeres</option>
+          <option value="OTRO">Otro</option>
+        </select>
       </div>
+
+      {usuariosFiltrados.length === 0 ? (
+        <h3 className="text-center">No hay más usuarios. Lo siento</h3>
+      ) : (
+        <div
+          key={usuario.id}
+          className="position-relative d-flex flex-column flex-md-row border rounded mb-4 mt-3"
+          style={{ overflow: "auto", minHeight: "400px" }}
+        >
+          {/* Overlay de carga */}
+          {isLoading && (
+            <div
+              className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75"
+              style={{ zIndex: 10 }}
+            >
+              <Spinner animation="border" role="status" variant="primary" />
+            </div>
+          )}
+
+          {/* Mitad izquierda: Carrusel de fotos */}
+          <div
+            className="bg-secondary bg-gradient d-flex justify-content-center align-items-center"
+            style={{
+              height: "400px",
+              flexBasis: "45%",
+              maxWidth: "100%",
+            }}
+          >
+            <Carousel
+              indicators={true}
+              controls={true}
+              style={{ width: "100%" }}
+            >
+              {usuario.foto1 && (
+                <Carousel.Item>
+                  <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ height: "400px", width: "100%" }}
+                  >
+                    <img
+                      src={`data:image/jpeg;base64,${usuario.foto1}`}
+                      alt="Foto 1"
+                      className="img-fluid"
+                      style={{
+                        maxHeight: "100%",
+                        maxWidth: "100%",
+                        objectFit: "contain",
+                      }}
+                    />
+                  </div>
+                </Carousel.Item>
+              )}
+              {usuario.foto2 && (
+                <Carousel.Item>
+                  <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ height: "400px", width: "100%" }}
+                  >
+                    <img
+                      src={`data:image/jpeg;base64,${usuario.foto2}`}
+                      alt="Foto 2"
+                      className="img-fluid"
+                      style={{
+                        maxHeight: "100%",
+                        maxWidth: "100%",
+                      }}
+                    />
+                  </div>
+                </Carousel.Item>
+              )}
+            </Carousel>
+          </div>
+
+          {/* Mitad derecha: Información */}
+          <div
+            className="p-4 bg-white flex-grow-1 d-flex flex-column "
+            style={{ flexBasis: "55%", maxHeight: "400px", overflow: "auto" }}
+          >
+            {/* Nombre siempre arriba */}
+            <div className="mb-3">
+              <h2>{usuario.name}</h2>
+            </div>
+
+            {/* Biografía y Edad: crecen según espacio disponible */}
+            <div className="flex-grow-1 d-flex flex-column justify-content-center">
+              <div className="mb-3">
+                <h5>Descripción</h5>
+                <p>{usuario.bio}</p>
+              </div>
+
+              <div className="d-flex gap-5 mb-3">
+                <div className="flex-fill text-center">
+                  <h5>Edad</h5>
+                  <p>{usuario.age}</p>
+                </div>
+                <div className="flex-fill text-center">
+                  <h5>Fuma</h5>
+                  <p>{usuario.fumador ? "Sí, fuma" : "No fumador"}</p>
+                </div>
+                <div className="flex-fill text-center">
+                  <h5>Género</h5>
+                  <p>{usuario.genero.toLowerCase()}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Botones siempre abajo */}
+            <div className="d-flex justify-content-center gap-3 mt-auto">
+              <button
+                className="btn btn-lg btn-success"
+                onClick={handleLike}
+                disabled={isLoading}
+              >
+                Me gusta
+              </button>
+              <button
+                className="btn btn-lg btn-danger"
+                onClick={handleNo}
+                disabled={isLoading}
+              >
+                NO!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

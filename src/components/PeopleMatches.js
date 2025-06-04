@@ -112,17 +112,30 @@ const PeopleMatches = () => {
               style={{ flexBasis: "55%" }}
             >
               <div className="mb-3">
-                <h3>{usuario.name}</h3>
+                <h2>{usuario.name}</h2>
               </div>
 
               {/* Biografía y Edad: crecen según espacio disponible */}
               <div className="flex-grow-1 d-flex flex-column justify-content-center">
-                <p>
-                  <strong>Biografía:</strong> {usuario.bio}
-                </p>
-                <p>
-                  <strong>Edad:</strong> {usuario.age}
-                </p>
+                <div className="mb-3">
+                  <h5>Biografía</h5>
+                  <p>{usuario.bio}</p>
+                </div>
+
+                <div className="d-flex gap-5 mb-3">
+                  <div className="flex-fill text-center">
+                    <h5>Edad</h5>
+                    <p>{usuario.age}</p>
+                  </div>
+                  <div className="flex-fill text-center">
+                    <h5>Fuma</h5>
+                    <p>{usuario.fumador ? "Sí, fuma" : "No fumador"}</p>
+                  </div>
+                  <div className="flex-fill text-center">
+                    <h5>Género</h5>
+                    <p>{usuario.genero.toLowerCase()}</p>
+                  </div>
+                </div>
               </div>
 
               <div className="d-flex justify-content-center mt-3">

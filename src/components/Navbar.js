@@ -1,26 +1,27 @@
 import React from "react";
-import { useAuth } from "../services/AuthContext"; // Asegúrate de importar tu contexto
-import { useNavigate, Link } from "react-router-dom"; // Solo si estás usando react-router
+import { useAuth } from "../services/AuthContext"; 
+import { useNavigate, Link } from "react-router-dom";
 
 const Navbar = () => {
   const { isLoggedIn, logout } = useAuth();
-  const navigate = useNavigate(); // opcional
+  const navigate = useNavigate();
 
   const navbarStyle = {
     backgroundColor: "#563d7c",
   };
 
+  // Leer el rol de usuario desde localStorage
+  const generoUsuario = localStorage.getItem("generoUsuario");
+
   const handleLogout = () => {
     logout();
-    navigate("/"); // o redirige a donde quieras
+    navigate("/");
   };
 
   return (
     <nav className="navbar navbar-expand-lg " style={navbarStyle}>
       <div className="container-fluid px-3">
-        {" "}
-        {/* px-3 = padding horizontal 1rem aprox */}
-        <a className="navbar-brand">MUNAY</a>
+        <a className="navbar-brand text-white">MUNAY</a>
         <button
           className="navbar-toggler"
           type="button"
@@ -35,24 +36,24 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item active">
-              <a className="nav-link">Inicio</a>
+              <a className="nav-link text-white">Inicio</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="ww.gogle.com">
-                Más información
-              </a>
+              <Link className="nav-link text-white" to="/informacion">
+                Mas informacion
+              </Link>
             </li>
 
             {isLoggedIn && (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/people">
+                  <Link className="nav-link text-white" to="/people">
                     Conocer
                   </Link>
                 </li>
                 <li className="nav-item dropdown">
                   <a
-                    className="nav-link dropdown-toggle"
+                    className="nav-link dropdown-toggle text-white"
                     id="navbarDropdown"
                     role="button"
                     data-bs-toggle="dropdown"
@@ -65,38 +66,56 @@ const Navbar = () => {
                     className="dropdown-menu mb-3 mb-md-0"
                     aria-labelledby="navbarDropdown"
                   >
-                    <a className="dropdown-item">Ver post</a>
-                    <a className="dropdown-item">Ver mis posts</a>
+                    <Link className="dropdown-item" to="/posts">Ver posts</Link>
+                    <Link className="dropdown-item" to="/misPosts">Ver mis posts</Link>
                     <div className="dropdown-divider"></div>
-                    <a className="dropdown-item">Something else here</a>
+                    <Link className="dropdown-item" to="/crearPost">Crear post</Link>
                   </div>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/matches">
+                  <Link className="nav-link text-white" to="/matches">
                     Matches
                   </Link>
                 </li>
+
+                {/* Dropdown Administrador solo para ADMIN */}
+                {generoUsuario === "ADMIN" && (
+                  <li className="nav-item dropdown">
+                    <a
+                      className="nav-link dropdown-toggle text-white"
+                      id="adminDropdown"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                    >
+                      Administrador
+                    </a>
+                    <div
+                      className="dropdown-menu"
+                      aria-labelledby="adminDropdown"
+                    >
+                      <Link className="dropdown-item" to="/admin-posts">Posts</Link>
+                      <Link className="dropdown-item" to="/admin-perfiles">Perfiles</Link>
+                    </div>
+                  </li>
+                )}
               </>
             )}
           </ul>
 
           {isLoggedIn && (
-            <>
-              <div className="d-flex flex-column flex-lg-row ms-auto gap-2">
-                <Link to="/perfil" className="btn btn-outline-light">
-                  Mostrar perfil
-                </Link>
-                  <Link to="/perfil" className="btn btn-outline-light">
-                  Editar perfil
-                </Link>
-                <button
-                  className="btn btn-outline-light "
-                  onClick={handleLogout}
-                >
-                  Cerrar sesión
-                </button>
-              </div>
-            </>
+            <div className="d-flex flex-column flex-lg-row ms-auto gap-2">
+              <Link to="/perfil" className="btn btn-outline-light">
+                Mostrar perfil
+              </Link>
+              <button
+                className="btn btn-outline-light "
+                onClick={handleLogout}
+              >
+                Cerrar sesión
+              </button>
+            </div>
           )}
         </div>
       </div>

@@ -1,6 +1,6 @@
 // src/components/ChatModal.jsx
 import React, { useEffect, useState, useRef } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, InputGroup } from "react-bootstrap";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import axios from "axios";
@@ -16,7 +16,7 @@ const ChatModal = ({
   const [input, setInput] = useState("");
   const [localMessages, setLocalMessages] = useState([]);
   const token = localStorage.getItem("accessToken");
-  const currentName= "Tú";
+  const currentName = "Tú";
   const stompClient = useRef(null);
   const bottomRef = useRef(null); // 👈 ref para scroll automático
 
@@ -145,16 +145,18 @@ const ChatModal = ({
         <div ref={bottomRef} /> {/* 👈 Marcador de scroll */}
       </Modal.Body>
       <Modal.Footer>
-        <Form.Control
-          type="text"
-          value={input}
-          placeholder="Escribe tu mensaje..."
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-        />
-        <Button variant="primary" onClick={sendMessage}>
-          Enviar
-        </Button>
+        <InputGroup>{/*en una sola linea*/}
+          <Form.Control
+            type="text"
+            value={input}
+            placeholder="Escribe tu mensaje..."
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          />
+          <Button variant="primary" onClick={sendMessage}>
+            Enviar
+          </Button>
+        </InputGroup>
       </Modal.Footer>
     </Modal>
   );

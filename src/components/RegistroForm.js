@@ -47,7 +47,7 @@ export const RegistroForm = ({ onClose, onSuccess }) => {
         bio,
         foto1: base64Foto1,
         foto2: base64Foto2,
-        genero,
+        genero: genero || "OTRO", // ← si quedó vacío, lo tratamos como "OTRO"
         fumador,
       };
 
@@ -230,13 +230,11 @@ export const RegistroForm = ({ onClose, onSuccess }) => {
               value={genero}
               onChange={(e) => setGenero(e.target.value)}
             >
-              <option value="OTRO">No quiero decirlo</option>
+              <option value="">No quiero decirlo</option>
               <option value="HOMBRE">Hombre</option>
               <option value="MUJER">Mujer</option>
+              <option value="ADMIN">Admin</option>
             </select>
-            {errores.gender && (
-              <div className="invalid-feedback">{errores.gender}</div>
-            )}
           </div>
         </div>
       </div>

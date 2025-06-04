@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import UsuarioService from "../services/UsuarioService";
 import { Carousel, Spinner } from "react-bootstrap";
+import { useAuth } from "../services/AuthContext"; // Asegúrate de importar tu contexto
 import { useNavigate } from "react-router-dom"; // Solo si estás usando react-router
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom"; // Solo si estás usando react-router
+
 
 const PerfilUsuario = () => {
+  const { isLoggedIn, logout } = useAuth();
+
   const [usuario, setUsuario] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate(); // opcional
@@ -105,39 +110,35 @@ const PerfilUsuario = () => {
 
           {/* Biografía y Edad: crecen según espacio disponible */}
           <div className="flex-grow-1 d-flex flex-column justify-content-center">
-            <p>
-              <strong>Biografía:</strong> {usuario.bio}
-            </p>
-            <p>
-              <strong>Edad:</strong> {usuario.age}
-            </p>
-            <p>
-              <strong>Email:</strong> {usuario.email}
-            </p>
-            <p>
-              <strong>Telefono:</strong> {usuario.tel}
-            </p>
+            <div className="mb-3">
+              <h5>Biografía</h5>
+              <p>{usuario.bio}</p>
+            </div>
 
-            <p>
-              <strong>Genero:</strong> {usuario.genero}
-            </p>
-            <p>
-              <strong>Fuma:</strong>{" "}
-              {usuario.fumador ? "Sí, fuma" : "No fumador"}
-            </p>
+            <div className="d-flex gap-5 mb-3">
+              <div className="flex-fill text-center">
+                <h5>Edad</h5>
+                <p>{usuario.age}</p>
+              </div>
+              <div className="flex-fill text-center">
+                <h5>Fuma</h5>
+                <p>{usuario.fumador ? "Sí, fuma" : "No fumador"}</p>
+              </div>
+              <div className="flex-fill text-center">
+                <h5>Género</h5>
+                <p>{usuario.genero.toLowerCase()}</p>
+              </div>
+            </div>
           </div>
 
           {/* Botones editar y eliminar */}
           <div className="d-flex justify-content-center gap-3 mt-4">
-            <button
+            <Link
               className="btn btn-primary"
-              onClick={() => {
-                // Redirigir a página de edición (asumiendo que existe)
-                window.location.href = "/editar-perfil";
-              }}
+              to={"/editarPerfil"}
             >
               Editar
-            </button>
+            </Link>
 
             <button
               className="btn btn-danger"
@@ -160,7 +161,7 @@ const PerfilUsuario = () => {
                           "Tu cuenta ha sido eliminada.",
                           "success"
                         );
-                        UsuarioService.logout(); // mejorar con el context
+                        logout(); // mejorar con el context
                         localStorage.removeItem("accessToken");
                         navigate("/");
                       })

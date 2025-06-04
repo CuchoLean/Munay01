@@ -32,17 +32,20 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
 
 .bg-cover {
-background-image:
+  background-image:
     linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-    url('../img/data.jpg');  background-size: cover;
+    url('../public/img/data.jpg');
+  background-size: cover;
   background-position: center;
-  min-height: calc(100vh - 112px); /* altura total menos navbar y footer */
+  min-height: calc(100vh - 112px);
+  /* altura total menos navbar y footer */
 }
 
 .modal.fade.show.d-block {
@@ -57,7 +60,19 @@ background-image:
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.nav-link:hover{
-  color: #fff !important;
+.nav-link:hover {
+  color: #000 !important;
   /* para que sea antes de bootstrap*/
+}
+
+.btn-primary {
+  background-color: #5e2b97 !important;
+  border-color: #5e2b97 !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #4a236f !important;
+  /* Morado más oscuro al hover */
+  border-color: #4a236f !important;
 }
