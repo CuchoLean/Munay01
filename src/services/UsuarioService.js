@@ -1,10 +1,10 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-const REGISTER_API_URL = "http://localhost:8080/auth/register";
-const LOGIN_API_URL = "http://localhost:8080/auth/login";
-const USUARIOS_API_URL = "http://localhost:8080/usuarios/todos";
-const POSTS_API_URL = "http://localhost:8080/posts";
+const REGISTER_API_URL = "https://munayy-d9874341a611.herokuapp.com/auth/register";
+const LOGIN_API_URL = "https://munayy-d9874341a611.herokuapp.com/auth/login";
+const USUARIOS_API_URL = "https://munayy-d9874341a611.herokuapp.com/usuarios/todos";
+const POSTS_API_URL = "https://munayy-d9874341a611.herokuapp.com/posts";
 
 class UsuarioService {
   saveUsuario(usuario) {
@@ -54,7 +54,7 @@ class UsuarioService {
   likeUser(likedUserId) {
     const token = localStorage.getItem("accessToken");
     return axios.post(
-      `http://localhost:8080/usuarios/like/${likedUserId}`,
+      `https://munayy-d9874341a611.herokuapp.com/usuarios/like/${likedUserId}`,
       null,
       {
         headers: {
@@ -66,7 +66,7 @@ class UsuarioService {
 
   getUsuariosNoLikeados() {
     const token = this.getToken();
-    return axios.get("http://localhost:8080/usuarios/todosL", {
+    return axios.get("https://munayy-d9874341a611.herokuapp.com/usuarios/todosL", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -75,7 +75,7 @@ class UsuarioService {
 
   getUsuariosConMatch() {
     const token = this.getToken();
-    return axios.get("http://localhost:8080/usuarios/usuarios-match", {
+    return axios.get("https://munayy-d9874341a611.herokuapp.com/usuarios/usuarios-match", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -85,7 +85,7 @@ class UsuarioService {
   updateUsuario(datosActualizados) {
     const token = this.getToken();
     return axios.put(
-      "http://localhost:8080/usuarios/actualizar",
+      "https://munayy-d9874341a611.herokuapp.com/usuarios/actualizar",
       datosActualizados,
       {
         headers: {
@@ -97,7 +97,7 @@ class UsuarioService {
 
   getUsuarioDesdeToken() {
     const token = this.getToken();
-    return axios.get("http://localhost:8080/usuarios/buscarUsuarioToken", {
+    return axios.get("https://munayy-d9874341a611.herokuapp.com/usuarios/buscarUsuarioToken", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -106,7 +106,7 @@ class UsuarioService {
 
   deleteUsuario() {
     const token = this.getToken();
-    return axios.delete("http://localhost:8080/usuarios/eliminar", {
+    return axios.delete("https://munayy-d9874341a611.herokuapp.com/usuarios/eliminar", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -174,7 +174,7 @@ class UsuarioService {
 
   getUsuariosSinAdmin() {
     const token = this.getToken();
-    return axios.get("http://localhost:8080/usuarios/usuarios-sin-admin", {
+    return axios.get("https://munayy-d9874341a611.herokuapp.com/usuarios/usuarios-sin-admin", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -184,7 +184,7 @@ class UsuarioService {
   deleteUsuarioById(idUsuario) {
     const token = this.getToken();
     return axios.delete(
-      `http://localhost:8080/usuarios/eliminar/${idUsuario}`,
+      `https://munayy-d9874341a611.herokuapp.com/usuarios/eliminar/${idUsuario}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
