@@ -33,7 +33,7 @@ const PerfilUsuario = () => {
   if (isLoading) {
     return (
       <div
-        className="d-flex justify-content-center align-items-center"
+        className="d-flex flex-fill justify-content-center align-items-center"
         style={{ height: "80vh" }}
       >
         <Spinner animation="border" variant="primary" />

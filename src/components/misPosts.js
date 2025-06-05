@@ -3,18 +3,26 @@ import UsuarioService from "../services/UsuarioService";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
-
 const MyPostCard = ({ post, onEdit, onDelete }) => (
   <div className="col-12 col-sm-6 col-lg-4">
     <div className="card h-100 shadow-lg border-0 rounded-4 overflow-hidden d-flex flex-column">
-      <div className="overflow-hidden" style={{ height: "220px" }}>
+      <div
+        className="overflow-hidden"
+        style={{
+          height: "250px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#3b2a72",
+        }}
+      >
         <img
           src={`data:image/jpeg;base64,${post.imagen}`}
           alt="Post"
           className="card-img-top img-fluid"
           style={{
-            maxHeight: "220px",
-            objectFit: "cover",
+            maxHeight: "100%",
+            width: "auto",
             transition: "transform 0.4s ease",
           }}
           onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
@@ -24,7 +32,7 @@ const MyPostCard = ({ post, onEdit, onDelete }) => (
       <div className="card-body flex-grow-1">
         <h5
           className="card-title fw-semibold mb-2"
-          style={{ color: "#5e2b97" }} // morado oscuro
+          style={{ color: "#5e2b97" }}
         >
           {post.nombreUsuario}
         </h5>
@@ -32,11 +40,11 @@ const MyPostCard = ({ post, onEdit, onDelete }) => (
           {post.texto}
         </p>
       </div>
-      <div className="card-footer bg-transparent border-0 d-flex justify-content-center gap-4">
-        <button className="btn btn-primary" onClick={() => onEdit(post)}>
+      <div className="card-footer bg-transparent border-0 d-flex justify-content-center gap-3">
+        <button className="btn btn-primary px-3" onClick={() => onEdit(post)}>
           Editar
         </button>
-        <button className="btn btn-danger" onClick={() => onDelete(post.id)}>
+        <button className="btn btn-danger px-3" onClick={() => onDelete(post.id)}>
           Eliminar
         </button>
       </div>
@@ -93,28 +101,25 @@ const MisPosts = () => {
     return <p className="text-center text-muted">Cargando tus posts...</p>;
   }
 
-
-
-return (
-  <div className="container py-4 flex-fill">
-    <h1 className="text-center mb-5 fw-bold text-dark">Mis Posts</h1>
-    {posts.length === 0 ? (
-      <p className="text-center fst-italic text-muted">No has subido posts aún.</p>
-    ) : (
-      <div className="row g-4">
-        {posts.map((post) => (
-          <MyPostCard
-            key={post.id}
-            post={post}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        ))}
-      </div>
-    )}
-  </div>
-);
-
+  return (
+    <div className="container py-4 flex-fill">
+      <h1 className="text-center mb-5 fw-bold text-dark">Mis Posts</h1>
+      {posts.length === 0 ? (
+        <p className="text-center fst-italic text-muted">No has subido posts aún.</p>
+      ) : (
+        <div className="row g-4">
+          {posts.map((post) => (
+            <MyPostCard
+              key={post.id}
+              post={post}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default MisPosts;

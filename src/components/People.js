@@ -110,7 +110,7 @@ const People = () => {
   }
 
   return (
-    <div className="flex-fill container my-5 justify-content-center">
+    <div className="flex-fill container my-3 justify-content-center">
       <h1 className="text-center">USUARIOS</h1>
       <div className="mb-4 text-center">
         <label htmlFor="genero" className="form-label me-2 fw-bold">

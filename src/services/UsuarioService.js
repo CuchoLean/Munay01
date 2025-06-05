@@ -1,25 +1,18 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-const REGISTER_API_URL = "https://munayy-d9874341a611.herokuapp.com/auth/register";
-const LOGIN_API_URL = "https://munayy-d9874341a611.herokuapp.com/auth/login";
-const USUARIOS_API_URL = "https://munayy-d9874341a611.herokuapp.com/usuarios/todos";
-const POSTS_API_URL = "https://munayy-d9874341a611.herokuapp.com/posts";
+const BASE_URL = "http://munayaws.duckdns.org:8080";
+const AUTH_API = `${BASE_URL}/auth`;
+const USUARIOS_API = `${BASE_URL}/usuarios`;
+const POSTS_API = `${BASE_URL}/posts`;
 
 class UsuarioService {
   saveUsuario(usuario) {
-    return axios.post(REGISTER_API_URL, usuario);
+    return axios.post(`${AUTH_API}/register`, usuario);
   }
-  getAllUsuarios() {
-    const token = localStorage.getItem("accessToken"); // o sessionStorage.getItem()
-    return axios.get(USUARIOS_API_URL, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  }
+
   login(credentials) {
-    return axios.post(LOGIN_API_URL, credentials).then((response) => {
+    return axios.post(`${AUTH_API}/login`, credentials).then((response) => {
       const accessToken = response.data.access_token;
       const refreshToken = response.data.refresh_token;
 
@@ -28,14 +21,8 @@ class UsuarioService {
         localStorage.setItem("refreshToken", refreshToken);
 
         const decoded = jwtDecode(accessToken);
-
-        const userId = decoded.id;
-        const userGenero = decoded.genero;
-        console.log(userId);
-
-        // Guardar el ID en localStorage para usar en React
-        localStorage.setItem("idUsuario", userId);
-        localStorage.setItem("generoUsuario", userGenero);
+        localStorage.setItem("idUsuario", decoded.id);
+        localStorage.setItem("generoUsuario", decoded.genero);
       }
       return response;
     });
@@ -51,146 +38,94 @@ class UsuarioService {
     return localStorage.getItem("accessToken");
   }
 
+  getAllUsuarios() {
+    return axios.get(`${USUARIOS_API}/todos`, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
+    });
+  }
+
   likeUser(likedUserId) {
-    const token = localStorage.getItem("accessToken");
-    return axios.post(
-      `https://munayy-d9874341a611.herokuapp.com/usuarios/like/${likedUserId}`,
-      null,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    return axios.post(`${USUARIOS_API}/like/${likedUserId}`, null, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
+    });
   }
 
   getUsuariosNoLikeados() {
-    const token = this.getToken();
-    return axios.get("https://munayy-d9874341a611.herokuapp.com/usuarios/todosL", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    return axios.get(`${USUARIOS_API}/todosL`, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
     });
   }
 
   getUsuariosConMatch() {
-    const token = this.getToken();
-    return axios.get("https://munayy-d9874341a611.herokuapp.com/usuarios/usuarios-match", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    return axios.get(`${USUARIOS_API}/usuarios-match`, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
     });
   }
 
   updateUsuario(datosActualizados) {
-    const token = this.getToken();
-    return axios.put(
-      "https://munayy-d9874341a611.herokuapp.com/usuarios/actualizar",
-      datosActualizados,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    return axios.put(`${USUARIOS_API}/actualizar`, datosActualizados, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
+    });
   }
 
   getUsuarioDesdeToken() {
-    const token = this.getToken();
-    return axios.get("https://munayy-d9874341a611.herokuapp.com/usuarios/buscarUsuarioToken", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    return axios.get(`${USUARIOS_API}/buscarUsuarioToken`, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
     });
   }
 
   deleteUsuario() {
-    const token = this.getToken();
-    return axios.delete("https://munayy-d9874341a611.herokuapp.com/usuarios/eliminar", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  }
-
-  crearPost(postData) {
-    const token = this.getToken();
-    return axios.post(POSTS_API_URL, postData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  }
-
-  // 📌 Obtener todos los posts
-  getTodosLosPosts() {
-    const token = this.getToken();
-    return axios.get(POSTS_API_URL, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  }
-
-  // 📌 Obtener posts del usuario autenticado
-  getMisPosts() {
-    const token = this.getToken();
-    return axios.get(`${POSTS_API_URL}/usuario`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  }
-
-  // 📌 Editar un post
-  editarPost(idPost, postActualizado) {
-    const token = this.getToken();
-    return axios.put(`${POSTS_API_URL}/${idPost}`, postActualizado, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  }
-
-  // 📌 Eliminar un post
-  eliminarPost(idPost) {
-    const token = this.getToken();
-    return axios.delete(`${POSTS_API_URL}/${idPost}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  }
-
-  // En UsuarioService.js
-  getPostById(idPost) {
-    const token = this.getToken();
-    return axios.get(`${POSTS_API_URL}/${idPost}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  }
-
-  getUsuariosSinAdmin() {
-    const token = this.getToken();
-    return axios.get("https://munayy-d9874341a611.herokuapp.com/usuarios/usuarios-sin-admin", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    return axios.delete(`${USUARIOS_API}/eliminar`, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
     });
   }
 
   deleteUsuarioById(idUsuario) {
-    const token = this.getToken();
-    return axios.delete(
-      `https://munayy-d9874341a611.herokuapp.com/usuarios/eliminar/${idUsuario}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    return axios.delete(`${USUARIOS_API}/eliminar/${idUsuario}`, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
+    });
+  }
+
+  getUsuariosSinAdmin() {
+    return axios.get(`${USUARIOS_API}/usuarios-sin-admin`, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
+    });
+  }
+
+  crearPost(postData) {
+    return axios.post(POSTS_API, postData, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
+    });
+  }
+
+  getTodosLosPosts() {
+    return axios.get(POSTS_API, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
+    });
+  }
+
+  getMisPosts() {
+    return axios.get(`${POSTS_API}/usuario`, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
+    });
+  }
+
+  editarPost(idPost, postActualizado) {
+    return axios.put(`${POSTS_API}/${idPost}`, postActualizado, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
+    });
+  }
+
+  eliminarPost(idPost) {
+    return axios.delete(`${POSTS_API}/${idPost}`, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
+    });
+  }
+
+  getPostById(idPost) {
+    return axios.get(`${POSTS_API}/${idPost}`, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
+    });
   }
 }
 
