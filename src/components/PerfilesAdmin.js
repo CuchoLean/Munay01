@@ -81,6 +81,7 @@ const PeopleMatches = () => {
                         alt="Foto 1"
                         className="img-fluid"
                         style={{
+                          width: "100%",
                           maxHeight: "100%",
                           maxWidth: "100%",
                           objectFit: "contain",
@@ -100,6 +101,7 @@ const PeopleMatches = () => {
                         alt="Foto 2"
                         className="img-fluid"
                         style={{
+                          width: "100%",
                           maxHeight: "100%",
                           maxWidth: "100%",
                           objectFit: "contain",

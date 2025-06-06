@@ -43,7 +43,7 @@ const ChatModal = ({
 
     fetchHistory();
 
-    const socket = new SockJS(`http://localhost:8080/ws`);
+    const socket = new SockJS(`http://munayaws.duckdns.org:8080/ws`);
     stompClient.current = new Client({
       webSocketFactory: () => socket,
       onConnect: () => {

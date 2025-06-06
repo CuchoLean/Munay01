@@ -109,7 +109,6 @@ export const RegistroForm = ({ onClose, onSuccess }) => {
                   <option value="">No quiero decirlo</option>
                   <option value="HOMBRE">Hombre</option>
                   <option value="MUJER">Mujer</option>
-                  <option value="ADMIN">Admin</option>
                 </select>
               </div>
 

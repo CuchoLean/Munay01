@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "http://munayaws.duckdns.org:8080";
 const MENSAJES_API = `${BASE_URL}/mensajes`;
 
 class MensajeService {

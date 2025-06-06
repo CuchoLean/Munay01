@@ -171,6 +171,7 @@ const People = () => {
                       alt="Foto 1"
                       className="img-fluid"
                       style={{
+                        width: "100%",
                         maxHeight: "100%",
                         maxWidth: "100%",
                         objectFit: "contain",
@@ -189,7 +190,11 @@ const People = () => {
                       src={`data:image/jpeg;base64,${usuario.foto2}`}
                       alt="Foto 2"
                       className="img-fluid"
-                      style={{ maxHeight: "100%", maxWidth: "100%" }}
+                      style={{
+                        width: "100%",
+                        maxHeight: "100%",
+                        maxWidth: "100%",
+                      }}
                     />
                   </div>
                 </Carousel.Item>
