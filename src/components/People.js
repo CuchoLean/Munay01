@@ -104,7 +104,8 @@ const People = () => {
         className="flex-fill container d-flex justify-content-center align-items-center"
         style={{ height: "60vh" }}
       >
-        <h2 className="text-center">Cargando usuarios...</h2>
+        <h2 className="text-center m-0">Cargando usuarios &nbsp;</h2>
+        <Spinner animation="border" role="status" variant="primary" />
       </div>
     );
   }
@@ -130,7 +131,7 @@ const People = () => {
       </div>
 
       {usuariosFiltrados.length === 0 ? (
-        <h3 className="text-center">No hay más usuarios. Lo siento</h3>
+        <h3 className="text-center">No hay más usuarios.</h3>
       ) : (
         <div
           key={usuario.id}
@@ -204,9 +205,8 @@ const People = () => {
           {/* Mitad derecha: Información */}
           <div
             className="p-4 bg-white flex-grow-1 d-flex flex-column "
-            style={{ flexBasis: "55%", maxHeight: "400px", overflow: "auto" }}
+            style={{ flexBasis: "55%", maxHeight: "400px" }}
           >
-            {/* Nombre siempre arriba */}
             <div className="mb-3">
               <h2>{usuario.name}</h2>
             </div>
@@ -215,7 +215,16 @@ const People = () => {
             <div className="flex-grow-1 d-flex flex-column justify-content-center">
               <div className="mb-3">
                 <h5>Descripción</h5>
-                <p>{usuario.bio}</p>
+                <p
+                  style={{
+                    maxHeight: "100px",
+                    overflow: "auto",
+                    wordBreak: "break-word",
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
+                  {usuario.bio}
+                </p>
               </div>
 
               <div className="d-flex gap-5 mb-3">

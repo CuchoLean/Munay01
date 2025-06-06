@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom"; // Solo si estás usando react-r
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom"; // Solo si estás usando react-router
 
-
 const PerfilUsuario = () => {
   const { isLoggedIn, logout } = useAuth();
 
@@ -111,8 +110,10 @@ const PerfilUsuario = () => {
           {/* Biografía y Edad: crecen según espacio disponible */}
           <div className="flex-grow-1 d-flex flex-column justify-content-center">
             <div className="mb-3">
-              <h5>Biografía</h5>
-              <p>{usuario.bio}</p>
+              <h5>Descripción</h5>
+              <p style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}>
+                {usuario.bio}
+              </p>
             </div>
 
             <div className="d-flex gap-5 mb-3">
@@ -133,10 +134,7 @@ const PerfilUsuario = () => {
 
           {/* Botones editar y eliminar */}
           <div className="d-flex justify-content-center gap-3 mt-4">
-            <Link
-              className="btn btn-primary"
-              to={"/editarPerfil"}
-            >
+            <Link className="btn btn-primary" to={"/editarPerfil"}>
               Editar
             </Link>
 
@@ -161,8 +159,7 @@ const PerfilUsuario = () => {
                           "Tu cuenta ha sido eliminada.",
                           "success"
                         );
-                        logout(); // mejorar con el context
-                        localStorage.removeItem("accessToken");
+                        logout();
                         navigate("/");
                       })
                       .catch((error) => {

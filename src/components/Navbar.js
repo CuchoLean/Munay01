@@ -2,11 +2,33 @@ import React from "react";
 import { useAuth } from "../services/AuthContext";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const Navbar = () => {
   const { isLoggedIn, logout } = useAuth();
   const navigate = useNavigate();
   const generoUsuario = localStorage.getItem("generoUsuario");
+
+  const handleInicioClick = () => {
+    if (!isLoggedIn) {
+      navigate("/");
+      return;
+    }
+
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "Si vas a Inicio, se cerrará tu sesión.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, salir",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logout();
+        navigate("/");
+      }
+    });
+  };
 
   const handleLogout = () => {
     logout();
@@ -17,27 +39,29 @@ const Navbar = () => {
     <nav
       className="navbar navbar-expand-lg shadow"
       style={{
-        background: "linear-gradient(90deg, #4b1d84, #2c0d5f)", // morado oscuro con transición más suave
+        background: "linear-gradient(90deg, #4b1d84, #2c0d5f)",
         padding: "0.75rem 1.5rem",
         fontWeight: "600",
       }}
     >
       <div className="container-fluid">
-        <NavLink
-          to="/"
+        {/* MUNAY logo */}
+        <span
+          onClick={handleInicioClick}
           className="navbar-brand d-flex align-items-center text-light"
+          style={{ cursor: "pointer" }}
         >
           <span className="d-flex align-items-center">
             MUNAY{" "}
             <FaHeart
               style={{
-                color: "#d3b9ff", // 💜 Púrpura suave, combínalo con tu tema
+                color: "#d3b9ff",
                 marginLeft: "8px",
                 fontSize: "1.2rem",
               }}
             />
           </span>
-        </NavLink>
+        </span>
 
         <button
           className="navbar-toggler border-light"
@@ -53,17 +77,18 @@ const Navbar = () => {
 
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            {/* Inicio */}
             <li className="nav-item">
-              <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  "nav-link text-light" + (isActive ? " active fw-bold" : "")
-                }
-                style={{ padding: "0.5rem 1rem" }}
+              <span
+                onClick={handleInicioClick}
+                className="nav-link text-light"
+                style={{ padding: "0.5rem 1rem", cursor: "pointer" }}
               >
                 Inicio
-              </NavLink>
+              </span>
             </li>
+
+            {/* Más información */}
             <li className="nav-item">
               <NavLink
                 to="/informacion"
@@ -82,14 +107,14 @@ const Navbar = () => {
                   <NavLink
                     to="/people"
                     className={({ isActive }) =>
-                      "nav-link text-light" +
-                      (isActive ? " active fw-bold" : "")
+                      "nav-link text-light" + (isActive ? " active fw-bold" : "")
                     }
                     style={{ padding: "0.5rem 1rem" }}
                   >
                     Conocer
                   </NavLink>
                 </li>
+
                 <li className="nav-item dropdown">
                   <a
                     className="nav-link dropdown-toggle text-light"
@@ -126,12 +151,12 @@ const Navbar = () => {
                     </li>
                   </ul>
                 </li>
+
                 <li className="nav-item">
                   <NavLink
                     to="/matches"
                     className={({ isActive }) =>
-                      "nav-link text-light" +
-                      (isActive ? " active fw-bold" : "")
+                      "nav-link text-light" + (isActive ? " active fw-bold" : "")
                     }
                     style={{ padding: "0.5rem 1rem" }}
                   >
@@ -163,7 +188,7 @@ const Navbar = () => {
                       </li>
                       <li>
                         <NavLink to="/admin-perfiles" className="dropdown-item">
-                          Perfiles
+                          Usuarios
                         </NavLink>
                       </li>
                     </ul>

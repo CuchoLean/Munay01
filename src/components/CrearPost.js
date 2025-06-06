@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import UsuarioService from "../services/UsuarioService";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const CrearPost = () => {
+  const navigate = useNavigate();
+
   const [texto, setTexto] = useState("");
   const [imagen, setImagen] = useState(null);
   const [preview, setPreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errores, setErrores] = useState({});  // Cambiado de error (string) a errores (objeto)
-  const [exito, setExito] = useState(false);
-
+  const [errores, setErrores] = useState({});
   const handleImagenChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -33,9 +35,6 @@ const CrearPost = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrores({});
-    setExito(false);
-
-    // No hacer validación manual aquí porque la API te devolverá errores
 
     try {
       const imagenBase64 = imagen ? await toBase64(imagen) : null;
@@ -47,13 +46,17 @@ const CrearPost = () => {
 
       await UsuarioService.crearPost(postData);
 
-      setExito(true);
-      setTexto("");
-      setImagen(null);
-      setPreview(null);
-      setErrores({});
+      await Swal.fire({
+        icon: "success",
+        title: "¡Éxito!",
+        text: "Post creado con éxito",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+
+      navigate("/posts");
     } catch (err) {
-      // Si la API responde con errores 400, mostramos los errores debajo de cada input
       if (err.response && err.response.status === 400) {
         setErrores(err.response.data);
       } else {
@@ -69,15 +72,9 @@ const CrearPost = () => {
     <div className="container my-5 flex-fill" style={{ maxWidth: "600px" }}>
       <h2 className="mb-4 text-center">Crear Nuevo Post</h2>
 
-      {/* Mostrar error general si existe */}
       {errores.general && (
         <div className="alert alert-danger" role="alert">
           {errores.general}
-        </div>
-      )}
-      {exito && (
-        <div className="alert alert-success" role="alert">
-          Post creado con éxito!
         </div>
       )}
 

@@ -7,12 +7,9 @@ const MyPostCard = ({ post, onEdit, onDelete }) => (
   <div className="col-12 col-sm-6 col-lg-4">
     <div className="card h-100 shadow-lg border-0 rounded-4 overflow-hidden d-flex flex-column">
       <div
-        className="overflow-hidden bg-morado-card"
+        className="overflow-hidden bg-morado-card d-flex justify-content-center align-items-center"
         style={{
           height: "250px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
           backgroundColor: "#3b2a72",
         }}
       >
@@ -29,7 +26,7 @@ const MyPostCard = ({ post, onEdit, onDelete }) => (
           onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
         />
       </div>
-      <div className="card-body flex-grow-1">
+      <div className="card-body overflow-auto" style={{ height: "300px" }}>
         <h5
           className="card-title fw-semibold mb-2"
           style={{ color: "#5e2b97" }}
@@ -97,15 +94,22 @@ const MisPosts = () => {
     });
   };
 
-  if (loading) {
-    return <p className="text-center text-muted">Cargando tus posts...</p>;
-  }
-
+if (loading) {
   return (
     <div className="container py-4 flex-fill">
       <h1 className="text-center mb-5 fw-bold text-dark">Mis Posts</h1>
+      <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+    </div>
+  );
+}  return (
+    <div className="container py-4 flex-fill">
+      <h1 className="text-center mb-5 fw-bold text-dark">Mis Posts</h1>
       {posts.length === 0 ? (
-        <p className="text-center fst-italic text-muted">No has subido posts aún.</p>
+               <h3 className="text-center">No has subido posts.</h3>
       ) : (
         <div className="row g-4">
           {posts.map((post) => (

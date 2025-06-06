@@ -17,7 +17,6 @@ const EditarPerfil = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
-  const [tel, setTel] = useState("");
   const [bio, setBio] = useState("");
   const [foto1, setFoto1] = useState(null);
   const [foto2, setFoto2] = useState(null);
@@ -40,7 +39,6 @@ const EditarPerfil = () => {
         setEmail(u.email || "");
         setName(u.name || "");
         setAge(u.age || "");
-        setTel(u.tel || "");
         setBio(u.bio || "");
         setGenero(u.genero || "");
         setFumador(Boolean(u.fumador));
@@ -90,6 +88,7 @@ const EditarPerfil = () => {
       const usuario = {
         email,
         ...(password && { password }),
+        //Si password tiene valor, entonces dentro del objeto usuario se incluye la propiedad password: password.
         name,
         age,
         bio,

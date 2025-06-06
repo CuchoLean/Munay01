@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import UsuarioService from "../services/UsuarioService";
+import Swal from "sweetalert2";
 
 const EditarPost = () => {
   const { id } = useParams(); // obtener id del post desde la URL
@@ -11,7 +12,6 @@ const EditarPost = () => {
   const [preview, setPreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errores, setErrores] = useState({});
-  const [exito, setExito] = useState(false);
 
   useEffect(() => {
     // Cargar datos del post al montar
@@ -54,10 +54,13 @@ const EditarPost = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrores({});
-    setExito(false);
 
     try {
-      const imagenBase64 = imagen ? await toBase64(imagen) : preview ? preview.split(",")[1] : null;
+      const imagenBase64 = imagen
+        ? await toBase64(imagen)
+        : preview
+        ? preview.split(",")[1]
+        : null;
 
       const postData = {
         texto,
@@ -66,10 +69,15 @@ const EditarPost = () => {
 
       await UsuarioService.editarPost(id, postData);
 
-      setExito(true);
-      setTimeout(() => {
-        navigate("/misPosts"); // Redirigir después del éxito
-      }, 1500);
+      await Swal.fire({
+        icon: "success",
+        title: "¡Éxito!",
+        text: "Post actualizado con éxito",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      navigate("/misPosts"); // Redirigir después del éxito
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrores(err.response.data);
@@ -86,11 +94,12 @@ const EditarPost = () => {
       <h2 className="mb-4 text-center">Editar Post</h2>
 
       {errores.general && <div className="alert alert-danger">{errores.general}</div>}
-      {exito && <div className="alert alert-success">Post actualizado con éxito!</div>}
 
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="textoPost" className="form-label">Texto del post</label>
+          <label htmlFor="textoPost" className="form-label">
+            Texto del post
+          </label>
           <textarea
             id="textoPost"
             className={`form-control ${errores.texto ? "is-invalid" : ""}`}
@@ -104,7 +113,9 @@ const EditarPost = () => {
         </div>
 
         <div className="mb-3">
-          <label htmlFor="imagenPost" className="form-label">Imagen</label>
+          <label htmlFor="imagenPost" className="form-label">
+            Imagen
+          </label>
           <input
             type="file"
             className={`form-control ${errores.imagen ? "is-invalid" : ""}`}
@@ -127,14 +138,14 @@ const EditarPost = () => {
           </div>
         )}
 
-        <button
-          type="submit"
-          className="btn btn-primary btn-lg w-100"
-          disabled={isSubmitting}
-        >
+        <button type="submit" className="btn btn-primary btn-lg w-100" disabled={isSubmitting}>
           {isSubmitting ? (
             <>
-              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
               Guardando...
             </>
           ) : (

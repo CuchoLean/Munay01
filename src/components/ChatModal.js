@@ -80,6 +80,9 @@ const ChatModal = ({
   }, [localMessages]);
 
   const sendMessage = async () => {
+    const trimmedInput = input.trim();
+    if (!trimmedInput) return; // Evita enviar mensajes vacíos o solo con espacios
+
     if (stompClient.current && stompClient.current.connected) {
       const message = {
         senderName: currentUser,
@@ -111,7 +114,12 @@ const ChatModal = ({
       </Modal.Header>
       <Modal.Body
         className="d-flex flex-column"
-        style={{ height: "400px", overflowY: "auto", backgroundColor: "#f5f5f5", padding: "20px" }}
+        style={{
+          height: "400px",
+          overflowY: "auto",
+          backgroundColor: "#f5f5f5",
+          padding: "20px",
+        }}
       >
         {isLoading && (
           <div className="text-center text-muted my-auto">
@@ -125,29 +133,32 @@ const ChatModal = ({
           </div>
         )}
 
-        {!isLoading && localMessages.map((msg, i) => {
-          const isSender = msg.senderName === currentUser;
-          return (
-            <div
-              key={i}
-              className={`d-flex mb-2 justify-content-${isSender ? "end" : "start"}`}
-            >
+        {!isLoading &&
+          localMessages.map((msg, i) => {
+            const isSender = msg.senderName === currentUser;
+            return (
               <div
-                className={`p-3 rounded-3 text-break`}
-                style={{
-                  maxWidth: "75%",
-                  backgroundColor: isSender ? "#e1bee7" : "#c5a7e2",
-                  color: "black",
-                }}
+                key={i}
+                className={`d-flex mb-2 justify-content-${
+                  isSender ? "end" : "start"
+                }`}
               >
-                <div className="fw-bold mb-1">
-                  {isSender ? currentName : receiverName}
+                <div
+                  className={`p-3 rounded-3 text-break`}
+                  style={{
+                    maxWidth: "75%",
+                    backgroundColor: isSender ? "#e1bee7" : "#c5a7e2",
+                    color: "black",
+                  }}
+                >
+                  <div className="fw-bold mb-1">
+                    {isSender ? currentName : receiverName}
+                  </div>
+                  <div>{msg.message}</div>
                 </div>
-                <div>{msg.message}</div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
         <div ref={bottomRef} />
       </Modal.Body>
       <Modal.Footer>

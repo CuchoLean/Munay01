@@ -29,9 +29,7 @@ class UsuarioService {
   }
 
   logout() {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("idUsuario");
+    localStorage.clear();
   }
 
   getToken() {

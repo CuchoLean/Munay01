@@ -16,10 +16,8 @@ const PeopleMatches = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    const userId = localStorage.getItem("idUsuario");
-    if (!userId) return;
 
-    UsuarioService.getUsuariosConMatch(userId)
+    UsuarioService.getUsuariosConMatch()
       .then((response) => {
         setUsuarios(response.data);
         console.log(response.data);
@@ -47,7 +45,7 @@ const PeopleMatches = () => {
     <div className="flex-fill container my-5">
       <h1 className="text-center mb-4">MATCHES</h1>
       {usuarios.length === 0 ? (
-        <h3 className="text-center">No hay matches. Lo siento</h3>
+        <h3 className="text-center">No hay matches.</h3>
       ) : (
         usuarios.map((usuario) => (
           <div
@@ -109,7 +107,7 @@ const PeopleMatches = () => {
             {/* Info y botón de chat */}
             <div
               className="p-4 bg-white flex-grow-1 d-flex flex-column justify-content-between"
-              style={{ flexBasis: "55%" }}
+              style={{ flexBasis: "55%", maxHeight: "400px" }}
             >
               <div className="mb-3">
                 <h2>{usuario.name}</h2>
@@ -118,8 +116,17 @@ const PeopleMatches = () => {
               {/* Biografía y Edad: crecen según espacio disponible */}
               <div className="flex-grow-1 d-flex flex-column justify-content-center">
                 <div className="mb-3">
-                  <h5>Biografía</h5>
-                  <p>{usuario.bio}</p>
+                  <h5>Descripción</h5>
+                  <p
+                    style={{
+                      maxHeight: "100px",
+                      overflow: "auto",
+                      wordBreak: "break-word",
+                      whiteSpace: "pre-wrap",
+                    }}
+                  >
+                    {usuario.bio}
+                  </p>
                 </div>
 
                 <div className="d-flex gap-5 mb-3">

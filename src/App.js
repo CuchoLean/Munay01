@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import MainInicio from "./components/MainInicio";
@@ -14,29 +14,107 @@ import MisPosts from "./components/misPosts";
 import EditarPost from "./components/EditarPost";
 import PerfilesAdmin from "./components/PerfilesAdmin";
 import PostsAdmin from "./components/PostsAdmin";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
-    <BrowserRouter >
+    <BrowserRouter>
       <div className="app d-flex flex-column min-vh-100 bg-morado-suave">
         <Navbar />
         <Routes>
-          <Route exact path="/" element={<MainInicio />}></Route>
-          <Route path="/people" element={<People />} />
-          <Route path="/matches" element={<PeopleMatches />} />
-          <Route path="/perfil" element={<PerfilUsuario />} />
-          <Route path="/editarPerfil" element={<EditarPerfil />} />
+          {/* Rutas públicas */}
+          <Route path="/" element={<MainInicio />} />
           <Route path="/informacion" element={<Informacion />} />
-          <Route path="/crearPost" element={<CrearPost />} />
-          <Route path="/misPosts" element={<MisPosts />} />
-          <Route path="/posts" element={<Posts />} />
-          <Route path="/editar-post/:id" element={<EditarPost />} />
-          <Route path="/admin-perfiles" element={<PerfilesAdmin />} />
-          <Route path="/admin-posts" element={<PostsAdmin />} />
+
+          {/* Rutas privadas */}
+          <Route
+            path="/people"
+            element={
+              <PrivateRoute>
+                <People />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/matches"
+            element={
+              <PrivateRoute>
+                <PeopleMatches />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/perfil"
+            element={
+              <PrivateRoute>
+                <PerfilUsuario />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/editarPerfil"
+            element={
+              <PrivateRoute>
+                <EditarPerfil />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/crearPost"
+            element={
+              <PrivateRoute>
+                <CrearPost />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/misPosts"
+            element={
+              <PrivateRoute>
+                <MisPosts />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/posts"
+            element={
+              <PrivateRoute>
+                <Posts />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/editar-post/:id"
+            element={
+              <PrivateRoute>
+                <EditarPost />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-perfiles"
+            element={
+              <PrivateRoute requireAdmin={true}>
+                <PerfilesAdmin />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-posts"
+            element={
+              <PrivateRoute requireAdmin={true}>
+                <PostsAdmin />
+              </PrivateRoute>
+            }
+          />
+
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+
         <Footer />
       </div>
     </BrowserRouter>
   );
 }
+
 export default App;

@@ -6,7 +6,6 @@ const Informacion = () => {
   return (
     <section className="bg-light py-5">
       <div className="container text-center">
-        {/* Imagen de cabecera */}
         <img
           src="/img/info.jpg"
           alt="Pareja feliz"

@@ -1,39 +1,53 @@
 import React, { useEffect, useState } from "react";
 import UsuarioService from "../services/UsuarioService";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
-
 
 const MyPostCard = ({ post, onDelete }) => (
   <div className="col-12 col-sm-6 col-lg-4">
     <div className="card h-100 shadow-lg border-0 rounded-4 overflow-hidden d-flex flex-column">
-      <div className="overflow-hidden" style={{ height: "220px" }}>
+      <div
+        className="overflow-hidden bg-morado-card d-flex justify-content-center align-items-center"
+        style={{
+          height: "250px",
+          backgroundColor: "#3b2a72",
+        }}
+      >
         <img
           src={`data:image/jpeg;base64,${post.imagen}`}
           alt="Post"
           className="card-img-top img-fluid"
           style={{
-            maxHeight: "220px",
-            objectFit: "cover",
+            maxHeight: "100%",
+            width: "auto",
             transition: "transform 0.4s ease",
           }}
           onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
           onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
         />
       </div>
-      <div className="card-body flex-grow-1">
+      <div className="card-body overflow-auto" style={{ height: "300px" }}>
         <h5
           className="card-title fw-semibold mb-2"
-          style={{ color: "#5e2b97" }} // morado oscuro
+          style={{ color: "#5e2b97" }}
         >
           {post.nombreUsuario}
         </h5>
-        <p className="card-text text-secondary" style={{ fontSize: "0.95rem" }}>
+        <p
+          className="card-text text-secondary"
+          style={{
+            fontSize: "0.95rem",
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+          }}
+        >
           {post.texto}
         </p>
       </div>
       <div className="card-footer bg-transparent border-0 d-flex justify-content-center">
-        <button className="btn btn-danger" onClick={() => onDelete(post.id)}>
+        <button
+          className="btn btn-danger px-3"
+          onClick={() => onDelete(post.id)}
+        >
           Eliminar
         </button>
       </div>
@@ -44,16 +58,13 @@ const MyPostCard = ({ post, onDelete }) => (
 const PostsAdmin = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    UsuarioService.getTodosLosPosts()
+    UsuarioService.getMisPosts()
       .then((response) => setPosts(response.data))
       .catch((error) => console.error("Error al cargar posts:", error))
       .finally(() => setLoading(false));
   }, []);
-
- 
 
   const handleDelete = (idPost) => {
     Swal.fire({
@@ -85,30 +96,35 @@ const PostsAdmin = () => {
   };
 
   if (loading) {
-    return <p className="text-center text-muted">Cargando posts...</p>;
+    return (
+      <div className="container py-4 flex-fill">
+        <h1 className="text-center mb-5 fw-bold text-dark">Administrar Posts</h1>
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{ height: "200px" }}
+        >
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+      </div>
+    );
   }
 
-
-
-return (
-  <div className="container py-4 flex-fill">
-    <h1 className="text-center mb-5 fw-bold text-dark"> Posts</h1>
-    {posts.length === 0 ? (
-      <p className="text-center fst-italic text-muted">No hay subido posts aún.</p>
-    ) : (
-      <div className="row g-4">
-        {posts.map((post) => (
-          <MyPostCard
-            key={post.id}
-            post={post}
-            onDelete={handleDelete}
-          />
-        ))}
-      </div>
-    )}
-  </div>
-);
-
+  return (
+    <div className="container py-4 flex-fill">
+      <h1 className="text-center mb-5 fw-bold text-dark">Administrar Posts</h1>
+      {posts.length === 0 ? (
+        <h3 className="text-center">No hay posts.</h3>
+      ) : (
+        <div className="row g-4">
+          {posts.map((post) => (
+            <MyPostCard key={post.id} post={post} onDelete={handleDelete} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default PostsAdmin;
