@@ -3,6 +3,7 @@ import { Modal, Button, Form, InputGroup, Spinner } from "react-bootstrap";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import MensajeService from "../services/MensajeService";
+import Swal from "sweetalert2";
 
 const ChatModal = ({
   show,
@@ -103,6 +104,19 @@ const ChatModal = ({
         setInput("");
       } catch (error) {
         console.error("Error guardando mensaje:", error);
+        if (error.response && error.response.status === 403) {
+          Swal.fire({
+            icon: "error",
+            title: "Acceso denegado",
+            text: "No tienes permiso para enviar este mensaje.",
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo enviar el mensaje.",
+          });
+        }
       }
     }
   };

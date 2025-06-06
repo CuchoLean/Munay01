@@ -9,11 +9,12 @@ const People = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingUsuarios, setIsFetchingUsuarios] = useState(true);
   const [generoFiltrado, setGeneroFiltrado] = useState("");
+
   const usuariosFiltrados = generoFiltrado
     ? usuarios.filter((u) => u.genero.toUpperCase() === generoFiltrado)
     : usuarios;
 
-  const loggedUserId = localStorage.getItem("idUsuario"); // Debes guardar el userId al hacer login
+  const loggedUserId = localStorage.getItem("idUsuario");
 
   useEffect(() => {
     UsuarioService.getUsuariosNoLikeados()
@@ -25,17 +26,22 @@ const People = () => {
         console.log(error);
       })
       .finally(() => {
-        setIsFetchingUsuarios(false); // Ya terminó la carga inicial
+        setIsFetchingUsuarios(false);
       });
   }, []);
 
   const handleLike = () => {
     if (!loggedUserId) {
-      alert("Debes iniciar sesión para dar Me gusta");
+      Swal.fire({
+        icon: "warning",
+        title: "Acceso denegado",
+        text: "Debes iniciar sesión para dar Me gusta",
+        confirmButtonText: "Aceptar",
+      });
       return;
     }
-    setIsLoading(true);
 
+    setIsLoading(true);
     const likedUserId = usuarios[currentIndex]?.id;
 
     if (!likedUserId) {
@@ -48,19 +54,16 @@ const People = () => {
         const mensaje = res.data;
 
         if (mensaje.includes("Match")) {
-          // Mostrar una imagen personalizada
           Swal.fire({
             title: "¡Felicidades!",
             text: mensaje,
-            imageUrl: "/img/corazon.gif", // Cambia esta URL si quieres otra imagen
-
+            imageUrl: "/img/corazon.gif",
             imageWidth: 300,
             imageHeight: 200,
             imageAlt: "Imagen de Match",
             confirmButtonText: "Cerrar",
           });
         } else {
-          // Mostrar alerta tipo success
           Swal.fire({
             title: "Like enviado",
             text: mensaje,
@@ -69,16 +72,18 @@ const People = () => {
           });
         }
 
-        // Actualizar usuarios (después de cualquier alerta)
         const nuevosUsuarios = [...usuarios];
         nuevosUsuarios.splice(currentIndex, 1);
         setUsuarios(nuevosUsuarios);
         setCurrentIndex((prev) => (prev >= nuevosUsuarios.length ? 0 : prev));
       })
-
       .catch((err) => {
         console.error(err);
-        alert("Error enviando like");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Error enviando like",
+        });
       })
       .finally(() => {
         setIsLoading(false);
@@ -97,7 +102,6 @@ const People = () => {
 
   const usuario = usuariosFiltrados[currentIndex];
 
-  // Validación para evitar errores
   if (isFetchingUsuarios) {
     return (
       <div
@@ -138,7 +142,6 @@ const People = () => {
           className="position-relative d-flex flex-column flex-md-row border rounded mb-4 mt-3"
           style={{ overflow: "auto", minHeight: "400px" }}
         >
-          {/* Overlay de carga */}
           {isLoading && (
             <div
               className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75"
@@ -148,20 +151,15 @@ const People = () => {
             </div>
           )}
 
-          {/* Mitad izquierda: Carrusel de fotos */}
           <div
-            className="bg-morado-card  d-flex justify-content-center align-items-center"
+            className="bg-morado-card d-flex justify-content-center align-items-center"
             style={{
               height: "400px",
               flexBasis: "45%",
               maxWidth: "100%",
             }}
           >
-            <Carousel
-              indicators={true}
-              controls={true}
-              style={{ width: "100%" }}
-            >
+            <Carousel indicators controls style={{ width: "100%" }}>
               {usuario.foto1 && (
                 <Carousel.Item>
                   <div
@@ -191,10 +189,7 @@ const People = () => {
                       src={`data:image/jpeg;base64,${usuario.foto2}`}
                       alt="Foto 2"
                       className="img-fluid"
-                      style={{
-                        maxHeight: "100%",
-                        maxWidth: "100%",
-                      }}
+                      style={{ maxHeight: "100%", maxWidth: "100%" }}
                     />
                   </div>
                 </Carousel.Item>
@@ -202,16 +197,14 @@ const People = () => {
             </Carousel>
           </div>
 
-          {/* Mitad derecha: Información */}
           <div
-            className="p-4 bg-white flex-grow-1 d-flex flex-column "
+            className="p-4 bg-white flex-grow-1 d-flex flex-column"
             style={{ flexBasis: "55%", maxHeight: "400px" }}
           >
             <div className="mb-3">
               <h2>{usuario.name}</h2>
             </div>
 
-            {/* Biografía y Edad: crecen según espacio disponible */}
             <div className="flex-grow-1 d-flex flex-column justify-content-center">
               <div className="mb-3">
                 <h5>Descripción</h5>
@@ -243,7 +236,6 @@ const People = () => {
               </div>
             </div>
 
-            {/* Botones siempre abajo */}
             <div className="d-flex justify-content-center gap-3 mt-auto">
               <button
                 className="btn btn-lg btn-success"

@@ -25,7 +25,11 @@ const EditarPost = () => {
         }
       })
       .catch(() => {
-        alert("No se encontró el post");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No se encontró el post.",
+        });
         navigate("/misPosts"); // redirigir si no se encuentra
       });
   }, [id, navigate]);
@@ -93,7 +97,9 @@ const EditarPost = () => {
     <div className="container my-5 flex-fill" style={{ maxWidth: "600px" }}>
       <h2 className="mb-4 text-center">Editar Post</h2>
 
-      {errores.general && <div className="alert alert-danger">{errores.general}</div>}
+      {errores.general && (
+        <div className="alert alert-danger">{errores.general}</div>
+      )}
 
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
@@ -109,7 +115,9 @@ const EditarPost = () => {
             onChange={(e) => setTexto(e.target.value)}
             disabled={isSubmitting}
           ></textarea>
-          {errores.texto && <div className="invalid-feedback">{errores.texto}</div>}
+          {errores.texto && (
+            <div className="invalid-feedback">{errores.texto}</div>
+          )}
         </div>
 
         <div className="mb-3">
@@ -124,7 +132,9 @@ const EditarPost = () => {
             onChange={handleImagenChange}
             disabled={isSubmitting}
           />
-          {errores.imagen && <div className="invalid-feedback">{errores.imagen}</div>}
+          {errores.imagen && (
+            <div className="invalid-feedback">{errores.imagen}</div>
+          )}
         </div>
 
         {preview && (
@@ -138,7 +148,11 @@ const EditarPost = () => {
           </div>
         )}
 
-        <button type="submit" className="btn btn-primary btn-lg w-100" disabled={isSubmitting}>
+        <button
+          type="submit"
+          className="btn btn-primary btn-lg w-100"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? (
             <>
               <span

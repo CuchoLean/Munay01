@@ -41,7 +41,11 @@ const PerfilUsuario = () => {
   }
 
   if (!usuario) {
-    return <h3 className="text-center">Usuario no encontrado</h3>;
+    return (
+      <div className="flex-fill container d-flex justify-content-center align-items-center">
+        <h3 className="text-center">Usuario eliminado</h3>
+      </div>
+    );
   }
 
   return (

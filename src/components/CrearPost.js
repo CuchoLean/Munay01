@@ -11,6 +11,7 @@ const CrearPost = () => {
   const [preview, setPreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errores, setErrores] = useState({});
+
   const handleImagenChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -54,14 +55,18 @@ const CrearPost = () => {
         showConfirmButton: false,
       });
 
-
       navigate("/posts");
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrores(err.response.data);
       } else {
-        setErrores({ general: "Error al crear el post. Intenta de nuevo." });
         console.error(err);
+        setErrores({});
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Error al crear el post. Intenta de nuevo.",
+        });
       }
     } finally {
       setIsSubmitting(false);
@@ -71,12 +76,6 @@ const CrearPost = () => {
   return (
     <div className="container my-5 flex-fill" style={{ maxWidth: "600px" }}>
       <h2 className="mb-4 text-center">Crear Nuevo Post</h2>
-
-      {errores.general && (
-        <div className="alert alert-danger" role="alert">
-          {errores.general}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
