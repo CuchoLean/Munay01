@@ -54,7 +54,7 @@ const PerfilUsuario = () => {
       >
         {/* Carrusel de fotos */}
         <div
-          className="bg-secondary d-flex justify-content-center align-items-center"
+          className="bg-morado-card d-flex justify-content-center align-items-center"
           style={{ height: "400px", flexBasis: "45%", maxWidth: "100%" }}
         >
           <Carousel indicators controls style={{ width: "100%" }}>

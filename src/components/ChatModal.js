@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Modal, Button, Form, InputGroup } from "react-bootstrap";
+import { Modal, Button, Form, InputGroup, Spinner } from "react-bootstrap";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import MensajeService from "../services/MensajeService";
@@ -42,7 +42,7 @@ const ChatModal = ({
 
     fetchHistory();
 
-    const socket = new SockJS(`http://munayaws.duckdns.org:8080/ws`);
+    const socket = new SockJS(`http://localhost:8080/ws`);
     stompClient.current = new Client({
       webSocketFactory: () => socket,
       onConnect: () => {
@@ -110,60 +110,45 @@ const ChatModal = ({
         <Modal.Title>Chat con {receiverName}</Modal.Title>
       </Modal.Header>
       <Modal.Body
-        style={{
-          height: "400px",
-          minHeight: "150px",
-          overflowY: "auto",
-          padding: "20px",
-          backgroundColor: "#f5f5f5", // Fondo gris suave
-        }}
+        className="d-flex flex-column"
+        style={{ height: "400px", overflowY: "auto", backgroundColor: "#f5f5f5", padding: "20px" }}
       >
-        {localMessages.length === 0 && !isLoading ? (
-          <div style={{ textAlign: "center", color: "gray" }}>
+        {isLoading && (
+          <div className="text-center text-muted my-auto">
+            <Spinner animation="border" size="sm" /> Cargando mensajes...
+          </div>
+        )}
+
+        {!isLoading && localMessages.length === 0 && (
+          <div className="text-center text-muted my-auto">
             Esto va a ser el inicio de una bonita historia
           </div>
-        ) : (
-          localMessages.map((msg, i) => (
+        )}
+
+        {!isLoading && localMessages.map((msg, i) => {
+          const isSender = msg.senderName === currentUser;
+          return (
             <div
               key={i}
-              style={{
-                display: "flex",
-                justifyContent:
-                  msg.senderName === currentUser ? "flex-end" : "flex-start",
-                marginBottom: "10px",
-              }}
+              className={`d-flex mb-2 justify-content-${isSender ? "end" : "start"}`}
             >
               <div
+                className={`p-3 rounded-3 text-break`}
                 style={{
                   maxWidth: "75%",
-                  padding: "10px 15px",
-                  borderRadius: "20px",
-                  backgroundColor:
-                    msg.senderName === currentUser
-                      ? "#e1bee7" // Morado claro para mensajes enviados
-                      : "#c5a7e2", // Ajuste de color más opaco para los mensajes recibidos
-                  color: msg.senderName === currentUser ? "black" : "black", // Asegurar que el color del texto sea oscuro
-                  fontSize: "14px",
-                  position: "relative",
-                  opacity: 1, // Asegurando que la opacidad sea 100% para todos los mensajes
-                  wordWrap: "break-word", // Asegura que el texto se ajuste dentro del mensaje
-                  overflowWrap: "break-word", // Rompe las palabras largas si es necesario
+                  backgroundColor: isSender ? "#e1bee7" : "#c5a7e2",
+                  color: "black",
                 }}
               >
-                <div style={{ fontWeight: "bold", marginBottom: "5px" }}>
-                  {msg.senderName === currentUser ? currentName : receiverName}
+                <div className="fw-bold mb-1">
+                  {isSender ? currentName : receiverName}
                 </div>
                 <div>{msg.message}</div>
               </div>
             </div>
-          ))
-        )}
-        {isLoading && (
-          <div style={{ textAlign: "center", color: "gray" }}>
-            Cargando mensajes..
-          </div>
-        )}
-        <div ref={bottomRef} /> {/* 👈 Marcador de scroll */}
+          );
+        })}
+        <div ref={bottomRef} />
       </Modal.Body>
       <Modal.Footer>
         <InputGroup>
@@ -173,9 +158,7 @@ const ChatModal = ({
             placeholder="Escribe tu mensaje..."
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            style={{
-              minWidth: "250px", // Asegura que el input no sea demasiado pequeño
-            }}
+            style={{ minWidth: "250px" }}
           />
           <Button variant="primary" onClick={sendMessage}>
             Enviar

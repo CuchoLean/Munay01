@@ -149,7 +149,7 @@ const People = () => {
 
           {/* Mitad izquierda: Carrusel de fotos */}
           <div
-            className="bg-secondary bg-gradient d-flex justify-content-center align-items-center"
+            className="bg-morado-card  d-flex justify-content-center align-items-center"
             style={{
               height: "400px",
               flexBasis: "45%",

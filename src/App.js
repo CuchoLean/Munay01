@@ -18,7 +18,7 @@ import PostsAdmin from "./components/PostsAdmin";
 function App() {
   return (
     <BrowserRouter >
-      <div className="app d-flex flex-column min-vh-100 bg-light">
+      <div className="app d-flex flex-column min-vh-100 bg-morado-suave">
         <Navbar />
         <Routes>
           <Route exact path="/" element={<MainInicio />}></Route>

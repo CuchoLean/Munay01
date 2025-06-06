@@ -1,7 +1,7 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-const BASE_URL = "http://munayaws.duckdns.org:8080";
+const BASE_URL = "http://localhost:8080";
 const AUTH_API = `${BASE_URL}/auth`;
 const USUARIOS_API = `${BASE_URL}/usuarios`;
 const POSTS_API = `${BASE_URL}/posts`;

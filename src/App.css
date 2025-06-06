@@ -76,3 +76,24 @@
   /* Morado más oscuro al hover */
   border-color: #4a236f !important;
 }
+
+.bg-morado {
+  background-color: #4a236f !important;
+}
+
+.bg-morado {
+  background-color: #4a236f !important;
+}
+
+.bg-morado-opacidad {
+  background-color: rgba(31, 8, 52, 0.5);
+  /* 50% opacidad */
+}
+
+.bg-morado-card {
+  background: linear-gradient(to top right, rgba(185, 155, 234, 0.9), #f8f9fa);
+}
+
+.bg-morado-suave {
+  background: linear-gradient(to top right, rgba(229, 215, 252, 0.9), #f8f9fa);
+}

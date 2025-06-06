@@ -1,16 +1,11 @@
 import React from "react";
-import { useAuth } from "../services/AuthContext"; 
-import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../services/AuthContext";
+import { NavLink, useNavigate } from "react-router-dom";
+import { FaHeart } from "react-icons/fa";
 
 const Navbar = () => {
   const { isLoggedIn, logout } = useAuth();
   const navigate = useNavigate();
-
-  const navbarStyle = {
-    backgroundColor: "#563d7c",
-  };
-
-  // Leer el rol de usuario desde localStorage
   const generoUsuario = localStorage.getItem("generoUsuario");
 
   const handleLogout = () => {
@@ -19,85 +14,159 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg " style={navbarStyle}>
-      <div className="container-fluid px-3">
-        <a className="navbar-brand text-white">MUNAY</a>
+    <nav
+      className="navbar navbar-expand-lg shadow"
+      style={{
+        background: "linear-gradient(90deg, #4b1d84, #2c0d5f)", // morado oscuro con transición más suave
+        padding: "0.75rem 1.5rem",
+        fontWeight: "600",
+      }}
+    >
+      <div className="container-fluid">
+        <NavLink
+          to="/"
+          className="navbar-brand d-flex align-items-center text-light"
+        >
+          <span className="d-flex align-items-center">
+            MUNAY{" "}
+            <FaHeart
+              style={{
+                color: "#d3b9ff", // 💜 Púrpura suave, combínalo con tu tema
+                marginLeft: "8px",
+                fontSize: "1.2rem",
+              }}
+            />
+          </span>
+        </NavLink>
+
         <button
-          className="navbar-toggler"
+          className="navbar-toggler border-light"
           type="button"
           data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
+          data-bs-target="#navbarNavAltMarkup"
+          aria-controls="navbarNavAltMarkup"
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span className="navbar-toggler-icon"></span>
+          <span className="navbar-toggler-icon" />
         </button>
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav mr-auto">
-            <li className="nav-item active">
-              <a className="nav-link text-white">Inicio</a>
+
+        <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  "nav-link text-light" + (isActive ? " active fw-bold" : "")
+                }
+                style={{ padding: "0.5rem 1rem" }}
+              >
+                Inicio
+              </NavLink>
             </li>
             <li className="nav-item">
-              <Link className="nav-link text-white" to="/informacion">
-                Mas informacion
-              </Link>
+              <NavLink
+                to="/informacion"
+                className={({ isActive }) =>
+                  "nav-link text-light" + (isActive ? " active fw-bold" : "")
+                }
+                style={{ padding: "0.5rem 1rem" }}
+              >
+                Más información
+              </NavLink>
             </li>
 
             {isLoggedIn && (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link text-white" to="/people">
+                  <NavLink
+                    to="/people"
+                    className={({ isActive }) =>
+                      "nav-link text-light" +
+                      (isActive ? " active fw-bold" : "")
+                    }
+                    style={{ padding: "0.5rem 1rem" }}
+                  >
                     Conocer
-                  </Link>
+                  </NavLink>
                 </li>
                 <li className="nav-item dropdown">
                   <a
-                    className="nav-link dropdown-toggle text-white"
-                    id="navbarDropdown"
+                    className="nav-link dropdown-toggle text-light"
+                    href="#!"
+                    id="postsDropdown"
                     role="button"
                     data-bs-toggle="dropdown"
-                    aria-haspopup="true"
                     aria-expanded="false"
+                    style={{ cursor: "pointer", padding: "0.5rem 1rem" }}
                   >
                     Posts
                   </a>
-                  <div
-                    className="dropdown-menu mb-3 mb-md-0"
-                    aria-labelledby="navbarDropdown"
+                  <ul
+                    className="dropdown-menu dropdown-menu-dark"
+                    aria-labelledby="postsDropdown"
                   >
-                    <Link className="dropdown-item" to="/posts">Ver posts</Link>
-                    <Link className="dropdown-item" to="/misPosts">Ver mis posts</Link>
-                    <div className="dropdown-divider"></div>
-                    <Link className="dropdown-item" to="/crearPost">Crear post</Link>
-                  </div>
+                    <li>
+                      <NavLink to="/posts" className="dropdown-item">
+                        Ver posts
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/misPosts" className="dropdown-item">
+                        Ver mis posts
+                      </NavLink>
+                    </li>
+                    <li>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    <li>
+                      <NavLink to="/crearPost" className="dropdown-item">
+                        Crear post
+                      </NavLink>
+                    </li>
+                  </ul>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link text-white" to="/matches">
+                  <NavLink
+                    to="/matches"
+                    className={({ isActive }) =>
+                      "nav-link text-light" +
+                      (isActive ? " active fw-bold" : "")
+                    }
+                    style={{ padding: "0.5rem 1rem" }}
+                  >
                     Matches
-                  </Link>
+                  </NavLink>
                 </li>
 
-                {/* Dropdown Administrador solo para ADMIN */}
                 {generoUsuario === "ADMIN" && (
                   <li className="nav-item dropdown">
                     <a
-                      className="nav-link dropdown-toggle text-white"
+                      className="nav-link dropdown-toggle text-light"
+                      href="#!"
                       id="adminDropdown"
                       role="button"
                       data-bs-toggle="dropdown"
-                      aria-haspopup="true"
                       aria-expanded="false"
+                      style={{ cursor: "pointer", padding: "0.5rem 1rem" }}
                     >
                       Administrador
                     </a>
-                    <div
-                      className="dropdown-menu"
+                    <ul
+                      className="dropdown-menu dropdown-menu-dark"
                       aria-labelledby="adminDropdown"
                     >
-                      <Link className="dropdown-item" to="/admin-posts">Posts</Link>
-                      <Link className="dropdown-item" to="/admin-perfiles">Perfiles</Link>
-                    </div>
+                      <li>
+                        <NavLink to="/admin-posts" className="dropdown-item">
+                          Posts
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink to="/admin-perfiles" className="dropdown-item">
+                          Perfiles
+                        </NavLink>
+                      </li>
+                    </ul>
                   </li>
                 )}
               </>
@@ -105,12 +174,16 @@ const Navbar = () => {
           </ul>
 
           {isLoggedIn && (
-            <div className="d-flex flex-column flex-lg-row ms-auto gap-2">
-              <Link to="/perfil" className="btn btn-outline-light">
-                Mostrar perfil
-              </Link>
+            <div className="d-flex flex-column flex-lg-row ms-auto gap-3">
+              <NavLink
+                to="/perfil"
+                className="btn btn-outline-light rounded-pill px-5"
+                style={{ fontWeight: "600" }}
+              >
+                Mi perfil
+              </NavLink>
               <button
-                className="btn btn-outline-light "
+                className="btn btn-outline-light rounded-pill px-5 text-purple fw-semibold"
                 onClick={handleLogout}
               >
                 Cerrar sesión

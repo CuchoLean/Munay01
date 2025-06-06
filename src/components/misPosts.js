@@ -7,7 +7,7 @@ const MyPostCard = ({ post, onEdit, onDelete }) => (
   <div className="col-12 col-sm-6 col-lg-4">
     <div className="card h-100 shadow-lg border-0 rounded-4 overflow-hidden d-flex flex-column">
       <div
-        className="overflow-hidden"
+        className="overflow-hidden bg-morado-card"
         style={{
           height: "250px",
           display: "flex",

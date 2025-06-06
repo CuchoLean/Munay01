@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"; // 👈 Importamos el hook
 import { useAuth } from "../services/AuthContext"; // 👈 Importa el contexto
 
 
-const LoginForm = ({ onClose, onSuccess }) => {
+const LoginForm = ({ onClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -36,10 +36,8 @@ const LoginForm = ({ onClose, onSuccess }) => {
 
     try {
       await login({ email, password }); // 👈 Usamos login del contexto
-      onSuccess("Usuario logueado correctamente");
       onClose();
       navigate("/people");
-      window.location.reload() // 👈 Redirección al login exitoso
     } catch (err) {
       setError("Credenciales incorrectas");
       setEmail("");
